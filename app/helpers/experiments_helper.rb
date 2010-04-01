@@ -1,28 +1,36 @@
 module ExperimentsHelper
 
-
-  # see: http://code.google.com/apis/chart/docs/making_charts.html
   # see: http://code.google.com/apis/chart/docs/gallery/line_charts.html
   def make_temp_graph_img_url(data)
-    #return "http://chart.apis.google.com/chart?chs=250x100&chd=t:60,40&cht=p3&chl=Hello|World"
-    
     temp, time, timelabel = [], [], []
     data.each_with_index do |rec,i| 
-      temp << rec[0].to_i
-      timelabel << rec[1].split('/')[1]      
+      temp << rec[0].to_f
+      timelabel << rec[1].split('/')[1]
       time << i
     end
+
+    min, max, avg = temp.min, temp.max, temp.sum/temp.size.to_f
+    range = max-min
+    summary = [min, max, avg]    
+    
+    temp.each_with_index {|v,i| temp[i] = ((v-min)/range)*100.0}
+    summary.each_with_index {|v,i| summary[i] = ((v-min)/range)*100.0}
     
     base = "http://chart.apis.google.com/chart?"
-    base << "chs=640x240&"
+    base << "chs=600x240&"
+    base << "chco=0000FF&"
     base << "chtt=Melbourne Temperature&"
     base << "cht=lc&"
-    base << "chl=Temperature|Time&"
-    base << "chxt=x,y&"
-    #base << "chxl=0:|#{timelabel.join('|')}&"
-    base << "chxr=1,0,50,5&"
+    base << "chxt=x,y,r&"
+    base << "chxs=2,0000DD,9,-1,t,FF0000&"
+    base << "chxtc=0,10|1,10|2,-600&"    
+    #base << "chl=Temperature|Time&"
+    base << "chxr=1,#{min},#{max},#{(range)/10.0}&"    
+    base << "chxl=0:|#{timelabel.join('|')}|2:|min|max|avg|&"
+    #base << "chxl=2:|min|avg|max|&" 
+    base << "chxp=2,#{summary.join(',')}&"   
     base << "chd=t:#{temp.join(',')}"
-    
+        
     return base
   end
 
