@@ -1,0 +1,24 @@
+<div class="subtitle">Temperature Experiment 1</div>
+
+<p>
+The objective of this experiment is to inject recent temperature 
+readings and present them as a graph.
+</p>
+
+<p>
+I would like to achieve something similar to the <%= link_to "Latest Weather Graphs for Melbourne", "http://www.bom.gov.au/jsp/watl/weather/obs.jsp?graph=all_obs&station=86071" %>. I may want to use <%= link_to "Latest Weather Observations for Melbourne", "http://www.bom.gov.au/products/IDV60801/IDV60801.94868.shtml" %> or <%= link_to "Latest Weather Observations for the Melbourne Area", "http://www.bom.gov.au/weather/vic/observations/melbourne.shtml" %> as data sources.
+</p>
+
+
+
+<p>
+There were <%= @temp_data.size %> temperature observations for today.
+</p>
+
+<p>
+  <img src="<%=make_temp_graph_img_url(@temp_data) -%>" />
+</p>
+
+<p>
+  <%= link_to "Source", @jsonurl %>
+</p>
