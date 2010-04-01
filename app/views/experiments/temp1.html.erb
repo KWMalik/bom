@@ -1,8 +1,7 @@
 <div class="subtitle">Temperature Experiment 1</div>
 
 <p>
-The objective of this experiment is to inject recent temperature 
-readings and present them as a graph.
+A graph of Today's temperature.
 </p>
 
 
@@ -11,7 +10,7 @@ There were <%= @temp_data.size %> temperature observations for today.
 </p>
 
 <p>
-  <img src="<%=make_temp_graph_img_url(@temp_data) -%>" />
+  <img src="<%=make_day_temp_graph_img_url(@temp_data) -%>" />
 </p>
 
 <p>
@@ -19,6 +18,3 @@ There were <%= @temp_data.size %> temperature observations for today.
   <br />
   See the <%= link_to "JSON Source", @jsonurl %>.
 </p>
-
-
-debug: <%=make_temp_graph_img_url(@temp_data) -%>

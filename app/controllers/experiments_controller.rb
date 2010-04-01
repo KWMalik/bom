@@ -12,6 +12,14 @@ class ExperimentsController < ApplicationController
     @document = JSON.parse(buffer)
     @temp_data = get_today_data(@document)
   end
+  
+  # recent days  
+  def temp2
+    @jsonurl = "http://www.bom.gov.au/fwo/IDV60801/IDV60801.94868.json"
+    buffer = open(@jsonurl, "UserAgent" => "Ruby").read    
+    @document = JSON.parse(buffer)
+    @temp_data = get_all_data_by_day(@document)
+  end
 
   private
   
@@ -31,6 +39,18 @@ class ExperimentsController < ApplicationController
   
   def get_date(record)
     return record["local_date_time"]
+  end
+  
+  def get_all_data_by_day(doc)
+    data = get_data(doc)
+    map = {}
+    data.each do |record|
+      date = get_date(record)
+      day = date.split('/')[0]
+      if map[day].nil? then map[day] = [] end
+      map[day] << [get_temp(record), date]
+    end
+    map.keys.each {|key| map[key] = map[key].reverse}
   end
   
   def get_today_data(doc)
