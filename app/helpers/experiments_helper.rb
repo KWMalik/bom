@@ -122,8 +122,8 @@ module ExperimentsHelper
     base << "chxr=1,#{min},#{max},#{(range)/10.0}&"  
     # axis labels
     base << "chxl=0:|#{time_labels.join('|')}|2:|min|max|mean|&"
-    # axis label positions (!!!not working for axis 0!!!)
-    base << "chxp=0,#{display_time_labels.join(',')}|2,#{summary.join(',')}&"
+    # axis label positions (!!!not working for axis 0!!!) => 0,#{display_time_labels.join(',')}|
+    base << "chxp=2,#{summary.join(',')}&"
     # range for scaling data
     #base << "chds=#{min},#{max}&"
     # data
