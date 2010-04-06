@@ -9,7 +9,7 @@ module ExperimentsHelper
     temps_union = []
     data.keys.each do |key|
       temps[key] = []
-      data[key].each |v|
+      data[key].each do |v|
         temps[key] << v[0].to_f
       end      
       temps_union += data[key]
@@ -20,7 +20,7 @@ module ExperimentsHelper
     summary = [min, max, avg]
     #scale
     temps.keys.each do |key|
-      temps[key].each_with_index |v,i|
+      temps[key].each_with_index do |v,i|
         temps[key][i] = ((v-min)/range)*100.0
       end 
     end
