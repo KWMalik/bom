@@ -1,12 +1,16 @@
 <div class="subtitle">Temperature Experiment 1</div>
 
 <p>
-A graph of Today's temperature.
+A graph of Today's temperature in <strong>Melbourne, Victoria, Australia</strong>.
 </p>
 
 
 <p>
-There were <%= @temp_data.size %> temperature observations for today.
+There were <strong><%= @summary["total"] %></strong> observations for today between <strong><%= @summary["start_time"] %></strong> and <strong><%= @summary["end_time"] %></strong>. <br />
+The low was <strong><%= @summary["min"] %>&deg;C</strong>, the high was <strong><%= @summary["max"] %>&deg;C</strong>, the mean temperature was <strong><%= @summary["mean"].round(1) %>&deg;C</strong>. <br />
+The last observation was <strong><%= @summary["last_temp"] %>&deg;C</strong> at <strong><%= @summary["last_time"] %></strong> (<%= (Time.now-Time.parse(@summary["last_time"])).to_i/60 %> minutes ago).
+
+
 </p>
 
 <p>
@@ -25,7 +29,8 @@ There were <%= @temp_data.size %> temperature observations for today.
 <ul>
   <li>Unclutter x axis labels.</li>
   <li>Separate y-axis labels from scaling method (nice/consistent labels)</li>
-  <li>Summary information above graph (high, low, last time, etc)</li>
+  <li>Moving average? Regression?</li>
+  <li>Include forecast high and low?</li>
   <li>Aesthetics, make it look sexy</li>
 </ul>
 </p>

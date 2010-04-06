@@ -11,6 +11,7 @@ class ExperimentsController < ApplicationController
     buffer = open(@jsonurl, "UserAgent" => "Ruby").read    
     @document = JSON.parse(buffer)
     @temp_data = get_today_data(@document)
+    @summary = summary_for_day_temp_data(@temp_data)
   end
   
   # recent days  
@@ -24,7 +25,7 @@ class ExperimentsController < ApplicationController
   private
   
   # see: http://www.bom.gov.au/catalogue/observations/about-weather-observations.shtml
-  
+    
   def get_header(doc)
     doc["observations"]["header"]
   end
@@ -41,6 +42,11 @@ class ExperimentsController < ApplicationController
     return record["local_date_time"]
   end
   
+  #
+  # temp data by day
+  # in: parsed json doc
+  # out: data[day][i][temp, day/time]
+  #
   def get_all_data_by_day(doc)
     data = get_data(doc)
     map = {}
@@ -51,8 +57,14 @@ class ExperimentsController < ApplicationController
       map[day] << [get_temp(record), date]
     end
     map.keys.each {|key| map[key] = map[key].reverse}
+    return map
   end
   
+  #
+  # just todays data 
+  # in: parsed json doc
+  # out: data[i][temp, day/time]
+  #
   def get_today_data(doc)
     data = get_data(doc)
     rs = []
@@ -63,6 +75,30 @@ class ExperimentsController < ApplicationController
       rs << [get_temp(record), date]
     end
     return rs.reverse 
+  end
+
+  #
+  # make a summary hash for a days temp data
+  # in: data[i][temp, day/time]
+  # out: summary[key][value]
+  #
+  def summary_for_day_temp_data(data)
+    summary = {}
+    # raw temp data
+    temp = []
+    data.each {|r| temp << r[0].to_f}
+    
+    summary["total"] = data.length
+    summary["min"] = temp.min
+    summary["max"] = temp.max
+    summary["mean"] = temp.sum/temp.length.to_f
+    summary["start_time"] = data.first[1].split('/')[1]
+    summary["end_time"] = data.last[1].split('/')[1]
+    summary["day"] = data.first[1].split('/')[0]
+    summary["last_time"] = data.last[1].split('/')[1]
+    summary["last_temp"] = data.last[0]
+    
+    return summary
   end
 
 end
