@@ -3,6 +3,30 @@ module ExperimentsHelper
   # see: http://code.google.com/apis/chart/docs/gallery/line_charts.html
   
   
+  #
+  # labels for 24 hours
+  #
+  def get_full_day_labels()
+    am, pm = [], []
+    12.times do |i|
+      hour = (i==0) ? "12" : ((i<10) ? "0#{i}" : i.to_s)
+      am << "#{hour}:00am"
+      am << "#{hour}:30am"
+      pm << "#{hour}:00pm"
+      pm << "#{hour}:30pm"
+    end
+    return am+pm
+  end
+
+  #
+  # just the labels to show  
+  #
+  def get_display_time_labels
+    return ["12:00am","12:00pm","11:30pm"]
+  end
+  
+  
+  
   # 
   # graph of all recent days temperatures
   #
@@ -28,36 +52,61 @@ module ExperimentsHelper
       end 
     end
     summary.each_with_index {|v,i| summary[i] = ((v-min)/range)*100.0}
+
+    # sort by full date
+    keys = data.keys
+    keys.sort!{|x,y| data[x][0][2].to_i<=>data[y][0][2].to_i}
     
-    #
-    # todo, read: http://code.google.com/apis/chart/docs/data_formats.html
-    # set ranges using chds
-    #
-    
-    
+    #block out oldest day
+    (48-temps[keys.first].length).times { temps[keys.first].unshift("_")}
+    # block out today
+    (48-temps[keys.last].length).times { temps[keys.last] << "_" }
+    # labels
+    time_labels = get_full_day_labels
+    display_time_labels = get_display_time_labels 
+
+
     base = "http://chart.apis.google.com/chart?"
+    # graph size
     base << "chs=600x240&"
-    base << "chco=0000FF&"
-    base << "chtt=Melbourne Temperature&"
-    base << "cht=lc&"
-    base << "chxt=x,y,r&"
-    base << "chxs=2,0000DD,9,-1,t,FF0000&"
-    base << "chxtc=0,10|1,10|2,-600&"
-    base << "chl=Temperature|Time&"
-    base << "chxr=1,#{min},#{max},#{(range)/10.0}&"    
-    base << "chxl=2:|min|mean|max|&" 
-    base << "chxp=2,#{summary.join(',')}&"
-    
-    #test with just last two days (not today)
+    # series colors
     base << "chco=00FF00,0000FF&"
-    base << "chdl=#{temps.keys[-3]}|#{temps.keys[-2]}&"
-    base << "chd=t:#{temps[temps.keys[-3]].join(',')}|#{temps[temps.keys[-2]].join(',')}"
+    # graph title
+    base << "chtt=Melbourne Temperatures&"
+    # graph type
+    base << "cht=lc&"
+    # visible axes
+    base << "chxt=x,y,r&"
+    # axis label styles
+    base << "chxs=2,0000DD,9,-1,t,FF0000&"
+    # axis tick mark styles
+    base << "chxtc=0,10|1,10|2,-600&"    
+    # axis ranges
+    base << "chxr=1,#{min},#{max},#{(range)/10.0}&"  
+    # axis labels
+    #base << "chxl=0:|#{time_labels.join('|')}|2:|min|mean|max|&"
+    base << "chxl=2:|min|mean|max|&"
+    # axis label positions (!!!not working for axis 0!!!) => 0,#{display_time_labels.join(',')}|
+    base << "chxp=2,#{summary.join(',')}&"
+    # range for scaling data
+    #base << "chds=#{min},#{max}&"
+
+  
     
-    #temps.keys.each_with_index do |key,i|
-    #  next if i>1
+    # test: today and yesterday
+  
+    # chart legend
+    base << "chdl=#{keys[2]}|#{keys[3]}&"
+    #data
+    base << "chd=t:#{temps[keys[2]].join(',')}|#{temps[keys[3]].join(',')}"
+    
+    
+    # all 4 (does not work, too much data!?)
+    
+    # base << "chd=t:"
+    #keys.each_with_index do |key,i|
     #  base << temps[key].join(',')
-    #  # base << "|" if i < temps.length-1
-    #  base << "|" if i<=0
+    #  base << "|" if i < temps.length-1
     #end
         
     return base
@@ -65,21 +114,7 @@ module ExperimentsHelper
   
   
   
-  def get_full_day_labels()
-    am, pm = [], []
-    12.times do |i|
-      hour = (i==0) ? "12" : ((i<10) ? "0#{i}" : i.to_s)
-      am << "#{hour}:00am"
-      am << "#{hour}:30am"
-      pm << "#{hour}:00pm"
-      pm << "#{hour}:30pm"
-    end
-    return am+pm
-  end
-  
-  def get_display_time_labels
-    return ["12:00am","12:00pm","11:30pm"]
-  end
+
   
   #
   # graph of today's temperature (server time today)

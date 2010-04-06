@@ -42,6 +42,10 @@ class ExperimentsController < ApplicationController
     return record["local_date_time"]
   end
   
+  def get_date_full(record)
+    return record["local_date_time_full"]
+  end
+  
   #
   # temp data by day
   # in: parsed json doc
@@ -52,9 +56,10 @@ class ExperimentsController < ApplicationController
     map = {}
     data.each do |record|
       date = get_date(record)
+      full_date = get_date_full(record)
       day = date.split('/')[0]
       if map[day].nil? then map[day] = [] end
-      map[day] << [get_temp(record), date]
+      map[day] << [get_temp(record), date, full_date]
     end
     map.keys.each {|key| map[key] = map[key].reverse}
     return map
