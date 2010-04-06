@@ -2,3 +2,11 @@
 
 A simple web application (rails) to play with data provided by the Australian Bureau 
 of Meteorology.
+
+
+== Jumpstart
+
+1. Install Rails 2.3.5 (sudo gem install rails)
+2. Chekout code: (git clone git://github.com/jbrownlee/bom.git)
+3. Run: bom/script/server
+4. Test: http://localhost:3000
