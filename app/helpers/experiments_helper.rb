@@ -27,6 +27,79 @@ module ExperimentsHelper
   
   
   
+  def make_multi_day_sequence_graph_img_url(data)
+    # create temp arrays and a union of all temps
+    temps = {}
+    temps_union = []
+    data.keys.each do |key|
+      temps[key] = []
+      data[key].each do |v|
+        if v[0].nil?
+          temps[key] << '_'
+        else
+          temps[key] << v[0].to_f
+          temps_union << v[0].to_f
+        end
+
+      end      
+    end
+    # create temp summary values
+    min, max, avg = temps_union.min, temps_union.max, (temps_union.sum/temps_union.size.to_f)
+    range = max-min
+    summary = [min, avg, max]
+    # scale
+    temps.keys.each do |key|
+      temps[key].each_with_index do |v,i|
+        next if v == '_'
+        temps[key][i] = (((v-min)/range)*100.0).round(3)
+      end 
+    end
+    summary.each_with_index {|v,i| summary[i] = (((v-min)/range)*100.0).round(3)}
+
+    # sort by full date
+    keys = data.keys
+    keys.sort!{|x,y| data[x][0][2].to_i<=>data[y][0][2].to_i}
+    
+    #block out oldest day
+    (48-temps[keys.first].length).times { temps[keys.first].unshift("_")}
+    # block out today
+    (48-temps[keys.last].length).times { temps[keys.last] << "_" }
+    # labels
+    time_labels = get_full_day_labels
+    display_time_labels = get_display_time_labels 
+    
+    #build master temp list
+    all_temps = []
+    keys.each do |key|
+      all_temps += temps[key]
+    end
+
+    base = "http://chart.apis.google.com/chart?"
+    # graph size
+    base << "chs=600x240&"
+    # series colors
+    base << "chco=00FF00,0000FF,FF0000,000000&"
+    # graph title
+    base << "chtt=Melbourne Temperatures&"
+    # graph type
+    base << "cht=lc&"
+    # visible axes
+    base << "chxt=x,y,r&"
+    # axis label styles
+    base << "chxs=2,0000DD,9,-1,t,FF0000&"
+    # axis tick mark styles
+    base << "chxtc=0,10|1,10|2,-600&"    
+    # axis ranges
+    base << "chxr=1,#{min},#{max},#{(range)/10.0}&"  
+    # axis labels
+    base << "chxl=2:|min|mean|max|&"
+    # axis label positions (!!!not working for axis 0!!!) => 0,#{display_time_labels.join(',')}|
+    base << "chxp=2,#{summary.join(',')}&"
+    base << "chd=t:#{all_temps.join(',')}"
+        
+    return base    
+  end
+  
   # 
   # graph of all recent days temperatures
   #

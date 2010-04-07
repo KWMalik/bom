@@ -14,6 +14,11 @@ There were <%= @temp_data.size %> days of observations.
 </p>
 
 <p>
+  <img src="<%=make_multi_day_sequence_graph_img_url(@temp_data) -%>" />
+</p>
+
+
+<p>
   The data comes from the <%= link_to "Latest Weather Observations for Melbourne", "http://www.bom.gov.au/products/IDV60801/IDV60801.94868.shtml" %>.
   <br />
   See the <%= link_to "JSON Source", @jsonurl %>.
