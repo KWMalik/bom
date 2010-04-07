@@ -1,0 +1,33 @@
+<h1>Reception point for local sensors</h1>
+
+<p>
+  This page is not really for user consumption. This page is intended for machines to 
+  push sensor data for storage by this application.
+</p>
+
+<p>
+  If you are a developer, configure your sensor software to make HTTP GET requests that expect an HTTP 200 response. The URL is
+  <%= link_to "http://odysseus.bom.gov.au:3000/experiment3", "http://odysseus.bom.gov.au:3000/experiment3" %> with a query string in the format: name=<em>station_name</em>&temp=<em>temperature.value</em>
+</p> 
+
+<p>
+  For example: http://odysseus.bom.gov.au:3000/experiment3?name=office1a&temp=23.234
+</p>
+
+<p>
+  
+This simple interface assumes that the sensor temperature value is at the specified station for the time that the request is being made. Also, consider rounding your temperature value to something sane, such as 3 decimal places.
+</p>
+
+<p>
+<strong>TODOs</strong>
+  <ul>
+    <li>A batch upload interface</li>
+    <li>Support specification of sensor reading time (maybe only in the batch interface)</li>
+    <li>Support specification of the closest BOM weather station (so we can correlate with BOM temperature in the future)</li>
+    <li>Support other sensor types (humidity?)</li>
+  </ul>
+</p>
+
+
+

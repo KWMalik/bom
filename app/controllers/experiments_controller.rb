@@ -24,7 +24,14 @@ class ExperimentsController < ApplicationController
   
   
   def temp3
-  
+    if !params[:name].nil? and !params[:temp].nil?
+      @sensor = Sensor.new(params)      
+      if @sensor.save
+        flash[:notice] = "Sensor name=#{@sensor.name} temp=#{@sensor.temp} was saved successfully."
+      else
+        flash[:notice] = "Unable to save sensor data, perhaps it was poorly defined."
+      end
+    end
   end
 
   private
