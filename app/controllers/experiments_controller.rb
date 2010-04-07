@@ -21,6 +21,11 @@ class ExperimentsController < ApplicationController
     @document = JSON.parse(buffer)
     @temp_data = get_all_data_by_day(@document)
   end
+  
+  
+  def temp3
+  
+  end
 
   private
   

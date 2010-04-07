@@ -1,21 +1,30 @@
-<div class="subtitle">Welcome to my BOM experiments</div>
+<div class="subtitle">Welcome to BOM experiments</div>
 
 <p>
-  Here you will find all kinds of experiments with BOM data. The sourcecode for this application is located
-  online at: <%= link_to "http://github.com/jbrownlee/bom", "http://github.com/jbrownlee/bom" %>
+  Here you will find all kinds of experiments with public data from the Australian Bureau of Meteorology.
+  The objective of this project is to provide a useful presentation of weather information (such as temperature) combined with local and context specific data (such as local temperature sensors).
+</p>
+<p>
+  The sourcecode for this application is located online at: 
+  <%= link_to "http://github.com/jbrownlee/bom", "http://github.com/jbrownlee/bom" %>
 </p>
 
+<p>
 <strong>Experiments</strong>
 <ul>
   <li>
-    <%= link_to "Experiment #1", "/experiments/temp1" %>: A graph of todays temperature (works).
+    <%= link_to "Experiment #1", experiment1_path %>: A graph of today's temperature...works.
   </li>
-    <li>
-    <%= link_to "Experiment #2", "/experiments/temp2" %>: A graph of recent days temperatures (in progress).
+  <li>
+    <%= link_to "Experiment #2", experiment2_path %>: A graph of the temperature from recent days...works
+  </li>
+  <li>
+    <%= link_to "Experiment #3", experiment3_path %>: A reception point for local temperature sensors...in progress
   </li>
 </ul>
-<br />
+</p>
 
+<p>
 <strong>References</strong>
 <ul>
   <li>
@@ -31,7 +40,7 @@
     <%= link_to "BOM: Latest Weather Observations for Melbourne", "http://www.bom.gov.au/products/IDV60801/IDV60801.94868.shtml" %> (with json data)
   </li>
 </ul>
-<br />
+</p>
 
 <p>
 <strong>TODOs</strong>
