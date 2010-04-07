@@ -25,7 +25,8 @@ class ExperimentsController < ApplicationController
   
   def temp3
     if !params[:name].nil? and !params[:temp].nil?
-      @sensor = Sensor.new(params)      
+      # do manually instead of the rails way
+      @sensor = Sensor.new(:name=>params[:name],:temp=>params[:temp])
       if @sensor.save
         flash[:notice] = "Sensor name=#{@sensor.name} temp=#{@sensor.temp} was saved successfully."
       else
