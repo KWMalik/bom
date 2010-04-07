@@ -91,7 +91,7 @@ class ExperimentsController < ApplicationController
     summary = {}
     # raw temp data
     temp = []
-    data.each {|r| temp << r[0].to_f}
+    data.each {|r| next if r[0].nil?;temp << r[0].to_f}
     
     summary["total"] = data.length
     summary["min"] = temp.min

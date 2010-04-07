@@ -20,12 +20,12 @@ There were <%= @temp_data.size %> days of observations.
 </p>
 
 
-debug: <br />
-total data items/day:  
-<% @temp_data.keys.each do |key| %>
-  <%= key %>=<%= @temp_data[key].length %>,
-<% end %>
 <br />
-
-
-query: <%=make_multiday_temp_graph_img_url(@temp_data) -%>
+<p>
+<strong>TODOs</strong>
+<ul>
+  <li>Display x axis labels.</li>
+  <li>Summary data for each day (complete day?).</li>
+  <li>Second version with 4 days end-to-end</li>
+</ul>
+</p>

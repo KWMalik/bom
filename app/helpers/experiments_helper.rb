@@ -37,8 +37,13 @@ module ExperimentsHelper
     data.keys.each do |key|
       temps[key] = []
       data[key].each do |v|
-        temps[key] << v[0].to_f
-        temps_union << v[0].to_f
+        if v[0].nil?
+          temps[key] << '_'
+        else
+          temps[key] << v[0].to_f
+          temps_union << v[0].to_f
+        end
+
       end      
     end
     # create temp summary values
@@ -48,10 +53,11 @@ module ExperimentsHelper
     # scale
     temps.keys.each do |key|
       temps[key].each_with_index do |v,i|
-        temps[key][i] = ((v-min)/range)*100.0
+        next if v == '_'
+        temps[key][i] = (((v-min)/range)*100.0).round(3)
       end 
     end
-    summary.each_with_index {|v,i| summary[i] = ((v-min)/range)*100.0}
+    summary.each_with_index {|v,i| summary[i] = (((v-min)/range)*100.0).round(3)}
 
     # sort by full date
     keys = data.keys
@@ -70,7 +76,7 @@ module ExperimentsHelper
     # graph size
     base << "chs=600x240&"
     # series colors
-    base << "chco=00FF00,0000FF&"
+    base << "chco=00FF00,0000FF,FF0000,000000&"
     # graph title
     base << "chtt=Melbourne Temperatures&"
     # graph type
@@ -84,30 +90,17 @@ module ExperimentsHelper
     # axis ranges
     base << "chxr=1,#{min},#{max},#{(range)/10.0}&"  
     # axis labels
-    #base << "chxl=0:|#{time_labels.join('|')}|2:|min|mean|max|&"
     base << "chxl=2:|min|mean|max|&"
     # axis label positions (!!!not working for axis 0!!!) => 0,#{display_time_labels.join(',')}|
     base << "chxp=2,#{summary.join(',')}&"
-    # range for scaling data
-    #base << "chds=#{min},#{max}&"
 
-  
-    
-    # test: today and yesterday
-  
-    # chart legend
-    base << "chdl=#{keys[2]}|#{keys[3]}&"
-    #data
-    base << "chd=t:#{temps[keys[2]].join(',')}|#{temps[keys[3]].join(',')}"
-    
-    
-    # all 4 (does not work, too much data!?)
-    
-    # base << "chd=t:"
-    #keys.each_with_index do |key,i|
-    #  base << temps[key].join(',')
-    #  base << "|" if i < temps.length-1
-    #end
+    # all 4 days
+    base << "chdl=#{keys.join("|")}&"
+    base << "chd=t:"
+    keys.each_with_index do |key,i|
+      base << temps[key].join(',')
+      base << "|" if i < (keys.length-1)
+    end
         
     return base
   end
@@ -121,15 +114,25 @@ module ExperimentsHelper
   #
   def make_day_temp_graph_img_url(data)
     # array of temp data
-    temp = []
-    data.each {|rec| temp << rec[0].to_f}
+    temp, union = [], []
+    data.each do |rec| 
+      if rec[0].nil?
+        temp << '_'
+      else      
+        temp << rec[0].to_f
+        union << rec[0].to_f
+      end
+    end
     # summary data
-    min, max, avg = temp.min, temp.max, temp.sum/temp.size.to_f
+    min, max, avg = union.min, union.max, union.sum/union.size.to_f
     range = max-min
     summary = [min, max, avg]    
     # scale manually
-    temp.each_with_index {|v,i| temp[i] = ((v-min)/range)*100.0}
-    summary.each_with_index {|v,i| summary[i] = ((v-min)/range)*100.0}
+    temp.each_with_index do |v,i| 
+      next if v == '_'
+      temp[i] = (((v-min)/range)*100.0).round(3)
+    end
+    summary.each_with_index {|v,i| summary[i] = (((v-min)/range)*100.0).round(3)}
     
     # block out the remainder of the temps for the day as nulls
     (48-temp.length).times { temp << "_"}
