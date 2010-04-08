@@ -1,4 +1,6 @@
 ActionController::Routing::Routes.draw do |map|
+  map.resources :sensors
+
 
   map.experiment1 'experiment1', :controller=>"experiments", :action=>"temp1"
   map.experiment2 'experiment2', :controller=>"experiments", :action=>"temp2"

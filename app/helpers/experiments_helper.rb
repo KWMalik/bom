@@ -86,7 +86,7 @@ module ExperimentsHelper
     # visible axes
     base << "chxt=x,y,r&"
     # axis label styles
-    base << "chxs=2,0000DD,9,-1,t,FF0000&"
+    base << "chxs=2,0000DD,9,-1,t,CCCCCC&"
     # axis tick mark styles
     base << "chxtc=0,10|1,10|2,-600&"    
     # axis ranges
@@ -157,7 +157,7 @@ module ExperimentsHelper
     # visible axes
     base << "chxt=x,y,r&"
     # axis label styles
-    base << "chxs=2,0000DD,9,-1,t,FF0000&"
+    base << "chxs=2,0000DD,9,-1,t,CCCCCC&"
     # axis tick mark styles
     base << "chxtc=0,10|1,10|2,-600&"    
     # axis ranges
@@ -216,7 +216,7 @@ module ExperimentsHelper
     # graph size
     base << "chs=600x240&"
     # series colors
-    base << "chco=0000FF&"
+    base << "chco=000000&"
     # graph title
     base << "chtt=Melbourne Temperature&"
     # graph type
@@ -224,7 +224,7 @@ module ExperimentsHelper
     # visible axes
     base << "chxt=x,y,r&"
     # axis label styles
-    base << "chxs=2,0000DD,9,-1,t,FF0000&"
+    base << "chxs=2,0000DD,9,-1,t,CCCCCC&"
     # axis tick mark styles
     base << "chxtc=0,10|1,10|2,-600&"    
     # axis names

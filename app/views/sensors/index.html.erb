@@ -1,0 +1,23 @@
+<h2>Collected Local Sensor Data</h2>
+
+<table style="width:80%;">
+  <tr>
+    <th>DateTime</th>
+    <th>Name</th>
+    <th>Temp</th>
+  </tr>
+
+<% @sensors.each do |sensor| %>
+  <tr>
+    <td><%=h sensor.created_at %></td>
+    <td><%=h sensor.name %></td>
+    <td><%=h sensor.temp %></td>
+    <td><%= link_to 'Edit', edit_sensor_path(sensor) %></td>
+    <td><%= link_to 'Delete', sensor, :confirm => 'Are you sure?', :method => :delete %></td>
+  </tr>
+<% end %>
+</table>
+
+<br />
+
+<%= link_to 'New sensor reading', new_sensor_path %>
