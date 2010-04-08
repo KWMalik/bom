@@ -5,6 +5,7 @@ ActionController::Routing::Routes.draw do |map|
   map.experiment1 'experiment1', :controller=>"experiments", :action=>"temp1"
   map.experiment2 'experiment2', :controller=>"experiments", :action=>"temp2"
   map.experiment3 'experiment3', :controller=>"experiments", :action=>"temp3"
+  map.experiment4 'experiment4', :controller=>"experiments", :action=>"temp4"
 
   # The priority is based upon order of creation: first created -> highest priority.
 

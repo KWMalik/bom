@@ -34,6 +34,11 @@ class ExperimentsController < ApplicationController
       end
     end
   end
+  
+  
+  def temp4
+  
+  end
 
   private
   
