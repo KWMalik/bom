@@ -5,7 +5,17 @@ A graph of Today's temperature in <strong>Melbourne, Victoria, Australia</strong
 with data from the BOM and local sensors.
 </p>
 
+<p>
+  <img src="<%=make_day_sensors_graph_img_url(@sensors) -%>" />
+</p>
 
+
+<p>
+Debug: <br />
+ruby date is <%= Date.today %> ruby time is <%= Time.now %> 
+<br />
+sensors: <%= @sensors.length %>
+</p>
 
 <br />
 <p>
@@ -13,5 +23,6 @@ with data from the BOM and local sensors.
 <ul>
   <li>Graph of melb temperature and all stations with data for today</li>
   <li>Allow filtering by station/location</li>
+  <li>Map UTC to time zone of collected data</li>
 </ul>
 </p>

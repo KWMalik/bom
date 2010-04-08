@@ -37,7 +37,9 @@ class ExperimentsController < ApplicationController
   
   
   def temp4
-  
+    # is this friendly to the date format stored in db?
+    # TODO maybe convert Date.today to utc then query - and do a between
+    @sensors = Sensor.all(:conditions=>["created_at >= ?", Date.today]);
   end
 
   private

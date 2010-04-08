@@ -242,5 +242,10 @@ module ExperimentsHelper
 
     return base
   end
+  
+  
+  def make_day_sensors_graph_img_url(sensors)
+  
+  end
 
 end
