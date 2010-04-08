@@ -15,14 +15,11 @@
 </head>
 <body <%= yield :body_tag %>>
 	<div class="head">
-		<div class="title">
-			BOM Experiments
-		</div>
-		<div class="menu">
-			<%= link_to "Home", root_path %> 
-		</div>		
-		<hr />
+		<div class="title">BOM Experiments</div>	
+		<div class="menu"><%= link_to "Home", root_path %></div>
+		<hr />		
 	</div>
+	<div class="time"><%= Time.now %> [<%= Time.zone %>]</div>
 	<div class="flash">
 		<%= flash[:notice] %>
 	</div>

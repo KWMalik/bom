@@ -37,9 +37,10 @@ class ExperimentsController < ApplicationController
   
   
   def temp4
-    # is this friendly to the date format stored in db?
-    # TODO maybe convert Date.today to utc then query - and do a between
-    @sensors = Sensor.all(:conditions=>["created_at >= ?", Date.today]);
+    # timezone set to melb, active record will do the magic for us i believe
+  
+    @sensors_today = Sensor.all(:conditions=>["date(created_at)=?", Date.today], :order=>"created_at");
+    @sensors_yesterday = Sensor.all(:conditions=>["date(created_at)=?", Date.today-1], :order=>"created_at");
   end
 
   private
@@ -65,6 +66,8 @@ class ExperimentsController < ApplicationController
   def get_date_full(record)
     return record["local_date_time_full"]
   end
+  
+
   
   #
   # temp data by day

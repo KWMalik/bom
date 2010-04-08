@@ -6,15 +6,22 @@ with data from the BOM and local sensors.
 </p>
 
 <p>
-  <img src="<%=make_day_sensors_graph_img_url(@sensors) -%>" />
+  <strong>Today (lazy)</strong>
+  <img src="<%=make_day_sensors_graph_img_url(@sensors_today) -%>" />
+</p>
+
+<p>
+  <strong>Yesterday (lazy)</strong>
+  <img src="<%=make_day_sensors_graph_img_url(@sensors_yesterday) -%>" />
 </p>
 
 
 <p>
 Debug: <br />
-ruby date is <%= Date.today %> ruby time is <%= Time.now %> 
+
 <br />
-sensors: <%= @sensors.length %>
+sensors today: <%= @sensors_today.length %>,
+sensors yesterday: <%= @sensors_yesterday.length %>
 </p>
 
 <br />

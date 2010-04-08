@@ -81,3 +81,8 @@ div.subtitle {
 	font-weight: bold;
 	font-size: 150%;
 }
+
+div.time {
+  text-align: right;
+  size: 50%;
+}

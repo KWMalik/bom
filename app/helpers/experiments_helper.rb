@@ -244,8 +244,62 @@ module ExperimentsHelper
   end
   
   
-  def make_day_sensors_graph_img_url(sensors)
+  def descretize_sensor_data(sensors)
+    data = []
+    return data if sensors.empty?
+    day = sensors.first.created_at.to_time.to_date.day
+    
+    
+    return data
+  end
   
+  #
+  # graph of sensor data
+  #
+  def make_day_sensors_graph_img_url(sensors)
+    return straight_up_lazy(sensors)
+  end
+
+
+  # raw plot
+  def straight_up_lazy(sensors)
+    return "" if sensors.empty?
+    temps = []
+    sensors.each {|s| temps << s.temp }
+    
+    min, max, avg = temps.min, temps.max, temps.sum/temps.size.to_f
+    range = max-min
+    summary = [min, max, avg]
+    
+    base = "http://chart.apis.google.com/chart?"
+    # graph size
+    base << "chs=600x240&"
+    # series colors
+    base << "chco=000000&"
+    # graph title
+    base << "chtt=Melbourne Temperature&"
+    # graph type
+    base << "cht=lc&"
+    # visible axes
+    base << "chxt=x,y,r&"
+    # axis label styles
+    base << "chxs=2,0000DD,9,-1,t,CCCCCC&"
+    # axis tick mark styles
+    base << "chxtc=0,10|1,10|2,-600&"    
+    # axis names
+    #base << "chl=Temperature|Time&"
+    # axis ranges
+    base << "chxr=1,#{min},#{max},#{(range)/10.0}&"  
+    # axis labels
+    base << "chxl=2:|min|max|mean|&"
+    # axis label positions (!!!not working for axis 0!!!) => 0,#{display_time_labels.join(',')}|
+    base << "chxp=2,#{summary.join(',')}&"
+    # range for scaling data
+    base << "chds=#{min},#{max}&"
+    # data
+    base << "chd=t:#{temps.join(',')}"
+
+    return base
   end
 
 end
