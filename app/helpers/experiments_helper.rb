@@ -243,12 +243,22 @@ module ExperimentsHelper
     return base
   end
   
-  
+  #### TODO just create the bins and drop the data where it fits
   def descretize_sensor_data(sensors)
-    data = []
+    data = {}
     return data if sensors.empty?
-    day = sensors.first.created_at.to_time.to_date.day
-    
+    sensors.sort!{|x,y| x.created_at <=> y.created_at}
+    old = Date.today.to_time
+    curr = old + 30.minutes
+    sensors.each do |s|
+      key = "#{curr.hour}:#{curr.min}#{curr.strftime("%p")}"
+      if s.created_at > curr
+        old, curr = curr, curr + 30.minutes
+        key = "#{curr.hour}:#{curr.min}#{curr.strftime("%p")}"
+      end
+      data[key] = [] if data[key].nil?
+      data[key] << s.temp
+    end
     
     return data
   end
@@ -256,13 +266,13 @@ module ExperimentsHelper
   #
   # graph of sensor data
   #
-  def make_day_sensors_graph_img_url(sensors)
-    return straight_up_lazy(sensors)
+  def make_day_sensors_graph_img_url(sensors, name)
+    return straight_up_lazy(sensors, name)
   end
 
 
   # raw plot
-  def straight_up_lazy(sensors)
+  def straight_up_lazy(sensors, name)
     return "" if sensors.empty?
     temps = []
     sensors.each {|s| temps << s.temp }
@@ -277,23 +287,24 @@ module ExperimentsHelper
     # series colors
     base << "chco=000000&"
     # graph title
-    base << "chtt=Melbourne Temperature&"
+    base << "chtt=Sensor Temperatures: #{name}&"
     # graph type
     base << "cht=lc&"
     # visible axes
-    base << "chxt=x,y,r&"
+#    base << "chxt=x,y,r&"
+    base << "chxt=x,y&"
     # axis label styles
-    base << "chxs=2,0000DD,9,-1,t,CCCCCC&"
+#    base << "chxs=2,0000DD,9,-1,t,CCCCCC&"
     # axis tick mark styles
-    base << "chxtc=0,10|1,10|2,-600&"    
+    #base << "chxtc=0,10|1,10|2,-600&"    
     # axis names
     #base << "chl=Temperature|Time&"
     # axis ranges
     base << "chxr=1,#{min},#{max},#{(range)/10.0}&"  
     # axis labels
-    base << "chxl=2:|min|max|mean|&"
+#    base << "chxl=2:|min|max|mean|&"
     # axis label positions (!!!not working for axis 0!!!) => 0,#{display_time_labels.join(',')}|
-    base << "chxp=2,#{summary.join(',')}&"
+#    base << "chxp=2,#{summary.join(',')}&"
     # range for scaling data
     base << "chds=#{min},#{max}&"
     # data

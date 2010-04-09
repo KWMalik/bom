@@ -10,7 +10,7 @@ with data from the BOM and local sensors.
   <% if @sensors_today.empty? %>
     No data
   <% else %>
-    <img src="<%=make_day_sensors_graph_img_url(@sensors_today) -%>" />
+    <img src="<%=make_day_sensors_graph_img_url(@sensors_today, "Today") -%>" />
   <%end%>
 </p>
 
@@ -19,7 +19,7 @@ with data from the BOM and local sensors.
   <% if @sensors_yesterday.empty? %>
     No data
   <% else %>
-    <img src="<%=make_day_sensors_graph_img_url(@sensors_yesterday) -%>" />
+    <img src="<%=make_day_sensors_graph_img_url(@sensors_yesterday, "Yesterday") -%>" />
   <%end%>
 </p>
 
@@ -28,6 +28,8 @@ with data from the BOM and local sensors.
 Debug: <br />
 sensors today: <%= @sensors_today.length %>,
 sensors yesterday: <%= @sensors_yesterday.length %>
+<br />
+<%= descretize_sensor_data(@sensors_today).keys %>
 </p>
 
 <br />
