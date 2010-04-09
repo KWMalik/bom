@@ -6,20 +6,26 @@ with data from the BOM and local sensors.
 </p>
 
 <p>
-  <strong>Today (lazy)</strong>
-  <img src="<%=make_day_sensors_graph_img_url(@sensors_today) -%>" />
+  <strong>Today (lazy)</strong> <br />
+  <% if @sensors_today.empty? %>
+    No data
+  <% else %>
+    <img src="<%=make_day_sensors_graph_img_url(@sensors_today) -%>" />
+  <%end%>
 </p>
 
 <p>
-  <strong>Yesterday (lazy)</strong>
-  <img src="<%=make_day_sensors_graph_img_url(@sensors_yesterday) -%>" />
+  <strong>Yesterday (lazy)</strong><br />
+  <% if @sensors_yesterday.empty? %>
+    No data
+  <% else %>
+    <img src="<%=make_day_sensors_graph_img_url(@sensors_yesterday) -%>" />
+  <%end%>
 </p>
 
 
 <p>
 Debug: <br />
-
-<br />
 sensors today: <%= @sensors_today.length %>,
 sensors yesterday: <%= @sensors_yesterday.length %>
 </p>
@@ -28,7 +34,7 @@ sensors yesterday: <%= @sensors_yesterday.length %>
 <p>
 <strong>TODOs</strong>
 <ul>
-  <li>Graph of melb temperature and all stations with data for today</li>
+  <li>Discretize the sensor data into 30 min blocks, plot with bom data</li>
   <li>Allow filtering by station/location</li>
   <li>Map UTC to time zone of collected data</li>
 </ul>

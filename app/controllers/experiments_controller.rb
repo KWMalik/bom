@@ -37,10 +37,11 @@ class ExperimentsController < ApplicationController
   
   
   def temp4
-    # timezone set to melb, active record will do the magic for us i believe
-  
-    @sensors_today = Sensor.all(:conditions=>["date(created_at)=?", Date.today], :order=>"created_at");
-    @sensors_yesterday = Sensor.all(:conditions=>["date(created_at)=?", Date.today-1], :order=>"created_at");
+    # timezone set to melb, active record will do the magic for us i believe    
+    # http://stackoverflow.com/questions/636553/how-to-properly-convert-or-query-date-range-for-rails-mysql-datetime-column
+    # http://stackoverflow.com/questions/1262825/why-does-this-rails-query-behave-differently-depending-on-timezone
+    @sensors_today = Sensor.find(:all, :conditions=>["created_at between ? and ?", Date.today.to_time.utc, Time.now.utc], :order=>"created_at");
+    @sensors_yesterday = Sensor.find(:all, :conditions=>["created_at between ? and ?", (Date.today-1).to_time.utc, Date.today.to_time.utc], :order=>"created_at");
   end
 
   private
