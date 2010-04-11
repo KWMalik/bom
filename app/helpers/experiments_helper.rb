@@ -243,37 +243,123 @@ module ExperimentsHelper
     return base
   end
   
-  #### TODO just create the bins and drop the data where it fits
+  def date_to_bin(date)  
+      diff = (date.min>30) ? 60-date.min : 30-date.min
+      d = date + diff.minutes
+      min = (d.min<10) ? "0#{d.min}" : d.min.to_s
+      hour = (d.hour>12) ? d.hour-12 : d.hour
+      hour = (hour<10) ? "0#{hour}" : hour.to_s
+      m = d.strftime("%p").downcase
+      return "#{hour}:#{min}#{m}"
+  end
+  
+  # Bin sensor data to closest 30 minutes. The first data point is thrown away,
+  # as the temps contribute to the first 30 min bin.
+  # 
   def descretize_sensor_data(sensors)
-    data = {}
-    return data if sensors.empty?
-    sensors.sort!{|x,y| x.created_at <=> y.created_at}
-    old = Date.today.to_time
-    curr = old + 30.minutes
+    labels = get_full_day_labels()
+    bins = Array.new(labels.length) {|i| {:label=>labels[i],:temp=>0.0,:count=>0} }
+    return bins if sensors.empty?
+    # process sensor data
     sensors.each do |s|
-      key = "#{curr.hour}:#{curr.min}#{curr.strftime("%p")}"
-      if s.created_at > curr
-        old, curr = curr, curr + 30.minutes
-        key = "#{curr.hour}:#{curr.min}#{curr.strftime("%p")}"
-      end
-      data[key] = [] if data[key].nil?
-      data[key] << s.temp
-    end
-    
-    return data
+      key = date_to_bin(s.created_at)
+      # locate record
+      record = bins.find {|r| r[:label]==key}
+      raise "could not locate label for key #{key}, this should not happen!" if record.nil?
+      record[:temp] += s.temp
+      record[:count] += 1
+    end    
+    return bins
   end
   
   #
   # graph of sensor data
   #
-  def make_day_sensors_graph_img_url(sensors, name)
+  def make_day_sensors_graph_img_url(sensors, name, usenew=false, bom=nil)
+    return new_temp_graph(sensors, name, bom) if usenew
     return straight_up_lazy(sensors, name)
   end
+  
+  
+  def new_temp_graph(sensors, name, bom)
+    return "" if sensors.empty?
+    
+    # SENSOR
+    bins = descretize_sensor_data(sensors)
+    union = []
+    display = []
+    bins.each do |record| 
+      if record[:count] > 0
+        t = record[:temp] / record[:count].to_f
+        union << t
+        display << t
+      else 
+        display << '_'
+      end
+    end
+    station = sensors.first.name
+    
+    # BOM
+    bom_data = []
+    bom.each do |rec| 
+      if rec[0].nil?
+        temp << '_'
+      else      
+        bom_data << rec[0].to_f
+        union << rec[0].to_f
+      end
+    end
+    # block out today
+    (48-bom_data.length).times { bom_data << "_"}
+    
+    min, max, avg = union.min, union.max, union.sum/union.size.to_f
+    range = max-min
+    summary = [min, max, avg]
+    
+    base = "http://chart.apis.google.com/chart?"
+    # graph size
+    base << "chs=600x240&"
+    # series colors
+    base << "chco=000000,FF0000&"
+    # graph title
+    base << "chtt=Sensor Temperatures: #{name}&"
+    # graph type
+    base << "cht=lc&"
+    # visible axes
+#    base << "chxt=x,y,r&"
+    base << "chxt=x,y&"
+    # axis label styles
+#    base << "chxs=2,0000DD,9,-1,t,CCCCCC&"
+    # axis tick mark styles
+    #base << "chxtc=0,10|1,10|2,-600&"    
+    # axis names
+    #base << "chl=Temperature|Time&"
+    # axis ranges
+    base << "chxr=1,#{min},#{max},#{(range)/10.0}&"  
+    # axis labels
+#    base << "chxl=2:|min|max|mean|&"
+    # axis label positions (!!!not working for axis 0!!!) => 0,#{display_time_labels.join(',')}|
+#    base << "chxp=2,#{summary.join(',')}&"
+    # range for scaling data
+    base << "chds=#{min},#{max}&"
+    # data legend
+    base << "chdl=Local(#{station})|Bom&"
+    # data
+    base << "chd=t:#{display.join(',')}|#{bom_data.join(',')}"
+
+    return base  
+  end
+
+
+
+
+
 
 
   # raw plot
   def straight_up_lazy(sensors, name)
     return "" if sensors.empty?
+    
     temps = []
     sensors.each {|s| temps << s.temp }
     

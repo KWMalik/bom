@@ -42,6 +42,14 @@ class ExperimentsController < ApplicationController
     # http://stackoverflow.com/questions/1262825/why-does-this-rails-query-behave-differently-depending-on-timezone
     @sensors_today = Sensor.find(:all, :conditions=>["created_at between ? and ?", Date.today.to_time.utc, Time.now.utc], :order=>"created_at");
     @sensors_yesterday = Sensor.find(:all, :conditions=>["created_at between ? and ?", (Date.today-1).to_time.utc, Date.today.to_time.utc], :order=>"created_at");
+    
+    
+    buffer = open("http://www.bom.gov.au/fwo/IDV60801/IDV60801.94868.json", "UserAgent" => "Ruby").read    
+    @bom_today = get_today_data(JSON.parse(buffer))
+    
+    
+    #@test_day = Date.parse('2010-04-09')
+    #@test_data = Sensor.find(:all, :conditions=>["created_at between ? and ?", @test_day.to_time.utc, (@test_day+1).to_time.utc], :order=>"created_at");
   end
 
   private

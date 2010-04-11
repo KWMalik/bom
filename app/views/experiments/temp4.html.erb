@@ -6,11 +6,11 @@ with data from the BOM and local sensors.
 </p>
 
 <p>
-  <strong>Today (lazy)</strong> <br />
+  <strong>Today (total observations=<%= @sensors_today.length %>)</strong> <br />
   <% if @sensors_today.empty? %>
     No data
   <% else %>
-    <img src="<%=make_day_sensors_graph_img_url(@sensors_today, "Today") -%>" />
+    <img src="<%=make_day_sensors_graph_img_url(@sensors_today, "Today", true, @bom_today) -%>" />
   <%end%>
 </p>
 
@@ -24,13 +24,7 @@ with data from the BOM and local sensors.
 </p>
 
 
-<p>
-Debug: <br />
-sensors today: <%= @sensors_today.length %>,
-sensors yesterday: <%= @sensors_yesterday.length %>
-<br />
-<%= descretize_sensor_data(@sensors_today).keys %>
-</p>
+
 
 <br />
 <p>
