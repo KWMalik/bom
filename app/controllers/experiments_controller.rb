@@ -53,8 +53,25 @@ class ExperimentsController < ApplicationController
     #@test_day = Date.parse('2010-04-09')
     #@test_data = Sensor.find(:all, :conditions=>["created_at between ? and ?", @test_day.to_time.utc, (@test_day+1).to_time.utc], :order=>"created_at");
   end
+  
+  
+  def temp5
+    @average = Sensor.average(:temp, :group=>"name", :order=>"name")
+    @count = Sensor.count(:temp, :group=>"name", :order=>"name")
+    @min = Sensor.minimum(:temp, :group=>"name", :order=>"name")
+    @max = Sensor.maximum(:temp, :group=>"name", :order=>"name")
+    
+  end
+  
+  
+  
+  
 
   private
+  
+  
+
+  
   
   # see: http://www.bom.gov.au/catalogue/observations/about-weather-observations.shtml
     

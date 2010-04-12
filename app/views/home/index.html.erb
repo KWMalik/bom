@@ -25,8 +25,11 @@
     </ul>
   </li>
   <li>
-    <%= link_to "Experiment #4", experiment4_path %>: A graph of BOM and local temperature data...in progress
+    <%= link_to "Experiment #4", experiment4_path %>: A graph of BOM and local temperature data...works
   </li>  
+  <li>
+    <%= link_to "Experiment #5", experiment5_path %>: Station (site) lists and stats...in progress
+  </li>    
 </ul>
 </p>
 
@@ -54,5 +57,6 @@
   <li>Consider playing with flash graphs (i've used  <%= link_to "openflashchart", "http://teethgrinder.co.uk/open-flash-chart/" %> before).</li>
   <li>Deploy to world-facing location (perhaps <%= link_to "Heroku", "http://www.heroku.com" %>)</li>
   <li>Start designing (reception point + data model + infrastructure) for local temp sensor logging</li>
+  <li>Better data management: site entity, site had obs, site has name, calibration, closest weather station, etc</li>
 </ul>
 </p>
