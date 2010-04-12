@@ -275,42 +275,41 @@ module ExperimentsHelper
   #
   # graph of sensor data
   #
-  def make_day_sensors_graph_img_url(sensors, name, usenew=false, bom=nil)
-    return new_temp_graph(sensors, name, bom) if usenew
-    return straight_up_lazy(sensors, name)
-  end
-  
-  
-  def new_temp_graph(sensors, name, bom)
-    return "" if sensors.empty?
-    
+  def make_day_sensors_graph_img_url(sensors, name, bom=nil)
     # SENSOR
-    bins = descretize_sensor_data(sensors)
     union = []
     display = []
-    bins.each do |record| 
-      if record[:count] > 0
-        t = record[:temp] / record[:count].to_f
-        union << t
-        display << t
-      else 
-        display << '_'
+    
+    if sensors.nil? or sensors.empty?
+      (48-display.length).times { display << "_"}
+    else
+      bins = descretize_sensor_data(sensors)
+      bins.each do |record| 
+        if record[:count] > 0
+          t = record[:temp] / record[:count].to_f
+          union << t
+          display << t
+        else 
+          display << '_'
+        end
       end
+      station = sensors.first.name
     end
-    station = sensors.first.name
     
     # BOM
     bom_data = []
-    bom.each do |rec| 
-      if rec[0].nil?
-        temp << '_'
-      else      
-        bom_data << rec[0].to_f
-        union << rec[0].to_f
+    if !bom.nil?
+      bom.each do |rec| 
+        if rec[0].nil?
+          temp << '_'
+        else      
+          bom_data << rec[0].to_f
+          union << rec[0].to_f
+        end
       end
     end
     # block out today
-    (48-bom_data.length).times { bom_data << "_"}
+   (48-bom_data.length).times { bom_data << "_"}
     
     min, max, avg = union.min, union.max, union.sum/union.size.to_f
     range = max-min
@@ -349,54 +348,7 @@ module ExperimentsHelper
 
     return base  
   end
-
-
-
-
-
-
-
-  # raw plot
-  def straight_up_lazy(sensors, name)
-    return "" if sensors.empty?
-    
-    temps = []
-    sensors.each {|s| temps << s.temp }
-    
-    min, max, avg = temps.min, temps.max, temps.sum/temps.size.to_f
-    range = max-min
-    summary = [min, max, avg]
-    
-    base = "http://chart.apis.google.com/chart?"
-    # graph size
-    base << "chs=600x240&"
-    # series colors
-    base << "chco=000000&"
-    # graph title
-    base << "chtt=Sensor Temperatures: #{name}&"
-    # graph type
-    base << "cht=lc&"
-    # visible axes
-#    base << "chxt=x,y,r&"
-    base << "chxt=x,y&"
-    # axis label styles
-#    base << "chxs=2,0000DD,9,-1,t,CCCCCC&"
-    # axis tick mark styles
-    #base << "chxtc=0,10|1,10|2,-600&"    
-    # axis names
-    #base << "chl=Temperature|Time&"
-    # axis ranges
-    base << "chxr=1,#{min},#{max},#{(range)/10.0}&"  
-    # axis labels
-#    base << "chxl=2:|min|max|mean|&"
-    # axis label positions (!!!not working for axis 0!!!) => 0,#{display_time_labels.join(',')}|
-#    base << "chxp=2,#{summary.join(',')}&"
-    # range for scaling data
-    base << "chds=#{min},#{max}&"
-    # data
-    base << "chd=t:#{temps.join(',')}"
-
-    return base
-  end
-
+  
+  
+  
 end

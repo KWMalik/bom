@@ -7,19 +7,15 @@ with data from the BOM and local sensors.
 
 <p>
   <strong>Today (total observations=<%= @sensors_today.length %>)</strong> <br />
-  <% if @sensors_today.empty? %>
-    No data
-  <% else %>
-    <img src="<%=make_day_sensors_graph_img_url(@sensors_today, "Today", true, @bom_today) -%>" />
-  <%end%>
+  <img src="<%=make_day_sensors_graph_img_url(@sensors_today, "Today", @bom_today) -%>" />
 </p>
 
 <p>
-  <strong>Yesterday (lazy)</strong><br />
+  <strong>Yesterday (total observations=<%= @sensors_yesterday.length %>)</strong><br />
   <% if @sensors_yesterday.empty? %>
     No data
   <% else %>
-    <img src="<%=make_day_sensors_graph_img_url(@sensors_yesterday, "Yesterday") -%>" />
+    <img src="<%=make_day_sensors_graph_img_url(@sensors_yesterday, "Yesterday", @bom_yesterday) -%>" />
   <%end%>
 </p>
 

@@ -44,9 +44,11 @@ class ExperimentsController < ApplicationController
     @sensors_yesterday = Sensor.find(:all, :conditions=>["created_at between ? and ?", (Date.today-1).to_time.utc, Date.today.to_time.utc], :order=>"created_at");
     
     
-    buffer = open("http://www.bom.gov.au/fwo/IDV60801/IDV60801.94868.json", "UserAgent" => "Ruby").read    
-    @bom_today = get_today_data(JSON.parse(buffer))
     
+    buffer = open("http://www.bom.gov.au/fwo/IDV60801/IDV60801.94868.json", "UserAgent" => "Ruby").read    
+    doc = JSON.parse(buffer)
+    @bom_today = get_today_data(doc)
+    @bom_yesterday = get_yesterday_data(doc)
     
     #@test_day = Date.parse('2010-04-09')
     #@test_data = Sensor.find(:all, :conditions=>["created_at between ? and ?", @test_day.to_time.utc, (@test_day+1).to_time.utc], :order=>"created_at");
@@ -113,6 +115,24 @@ class ExperimentsController < ApplicationController
     end
     return rs.reverse 
   end
+  
+  
+  #
+  # just yesterdays data 
+  # in: parsed json doc
+  # out: data[i][temp, day/time]
+  #
+  def get_yesterday_data(doc)
+    data = get_data(doc)
+    rs = []
+    data.each do |record|
+      date = get_date(record)
+      day = date.split('/')[0]
+      next if day.to_i != (Date.today.day-1)
+      rs << [get_temp(record), date]
+    end
+    return rs.reverse 
+  end  
 
   #
   # make a summary hash for a days temp data
