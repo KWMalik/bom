@@ -18,11 +18,9 @@ module ExperimentsHelper
     return am+pm
   end
 
-  #
-  # just the labels to show  
-  #
-  def get_display_time_labels
-    return ["12:00am","12:00pm","11:30pm"]
+
+  def get_time_labels
+    return ["12:00am", "03:00am", "06:00am", "09:00am", "12:00pm", "03:00pm", "06:00pm", "09:00pm", "12:00pm"]
   end
   
   
@@ -65,8 +63,7 @@ module ExperimentsHelper
     # block out today
     (48-temps[keys.last].length).times { temps[keys.last] << "_" }
     # labels
-    time_labels = get_full_day_labels
-    display_time_labels = get_display_time_labels 
+    time_labels = get_time_labels
     
     #build master temp list
     all_temps = []
@@ -93,7 +90,7 @@ module ExperimentsHelper
     base << "chxr=1,#{min},#{max},#{(range)/10.0}&"  
     # axis labels
     base << "chxl=2:|min|mean|max|&"
-    # axis label positions (!!!not working for axis 0!!!) => 0,#{display_time_labels.join(',')}|
+    # axis label positions
     base << "chxp=2,#{summary.join(',')}&"
     base << "chd=t:#{all_temps.join(',')}"
         
@@ -141,8 +138,7 @@ module ExperimentsHelper
     # block out today
     (48-temps[keys.last].length).times { temps[keys.last] << "_" }
     # labels
-    time_labels = get_full_day_labels
-    display_time_labels = get_display_time_labels 
+    time_labels = get_time_labels
 
 
     base = "http://chart.apis.google.com/chart?"
@@ -163,8 +159,8 @@ module ExperimentsHelper
     # axis ranges
     base << "chxr=1,#{min},#{max},#{(range)/10.0}&"  
     # axis labels
-    base << "chxl=2:|min|mean|max|&"
-    # axis label positions (!!!not working for axis 0!!!) => 0,#{display_time_labels.join(',')}|
+    base << "chxl=0:|#{get_time_labels.join('|')}|2:|min|mean|max|&"
+    # axis label positions
     base << "chxp=2,#{summary.join(',')}&"
 
     # all 4 days
@@ -209,8 +205,7 @@ module ExperimentsHelper
     
     # block out the remainder of the temps for the day as nulls
     (48-temp.length).times { temp << "_"}
-    time_labels = get_full_day_labels
-    display_time_labels = get_display_time_labels
+    time_labels = get_time_labels
     
     base = "http://chart.apis.google.com/chart?"
     # graph size
@@ -233,7 +228,7 @@ module ExperimentsHelper
     base << "chxr=1,#{min},#{max},#{(range)/10.0}&"  
     # axis labels
     base << "chxl=0:|#{time_labels.join('|')}|2:|min|max|mean|&"
-    # axis label positions (!!!not working for axis 0!!!) => 0,#{display_time_labels.join(',')}|
+    # axis label positions
     base << "chxp=2,#{summary.join(',')}&"
     # range for scaling data
     #base << "chds=#{min},#{max}&"
@@ -312,6 +307,8 @@ module ExperimentsHelper
     min, max = temp_union.min, temp_union.max
     range = max-min
     num_series = datasets.keys.length
+    time_labels = get_time_labels
+
     
     base = "http://chart.apis.google.com/chart?"
     # graph size
@@ -328,6 +325,10 @@ module ExperimentsHelper
     base << "chxr=1,#{min},#{max},#{(range)/10.0}&"
     # range for scaling data
     base << "chds=#{min},#{max}&"
+    # axis labels
+    base << "chxl=0:|#{time_labels.join('|')}&"
+    # axis label positions
+    #base << "chxp=0,#{display_time_labels.join(',')}&"
     # data legend
     base << "chdl=#{datasets.keys.join('|')}&"
     # data
