@@ -1,9 +1,15 @@
 <div class="subtitle">Temperature Experiment 2</div>
 
 <p>
-A graph of temperature from recent days.
+A graph of temperature from recent days from: <strong><%= @station.name %></strong>.
 </p>
 
+<% form_tag experiment2_path, :method => 'get' do %>
+    Station: <%= select_tag(:station_id, options_from_collection_for_select(@stations, :id, :name, params[:station_id].to_i)) %>
+    <%= submit_tag "change", :name => nil %>
+<% end %>
+</p>
+<hr />
 
 <p>
 There were <%= @temp_data.size %> days of observations.
@@ -21,7 +27,7 @@ There were <%= @temp_data.size %> days of observations.
 <p>
   The data comes from the <%= link_to "Latest Weather Observations for Melbourne", "http://www.bom.gov.au/products/IDV60801/IDV60801.94868.shtml" %>.
   <br />
-  See the <%= link_to "JSON Source", @jsonurl %>.
+  See the <%= link_to "JSON Source", @station.url %>.
 </p>
 
 
@@ -29,7 +35,6 @@ There were <%= @temp_data.size %> days of observations.
 <p>
 <strong>TODOs</strong>
 <ul>
-  <li>User selection of weather station (not hard coded to melbourne)</li>
   <li>Display x axis labels.</li>
   <li>Summary data for each day (complete day?).</li>
 </ul>

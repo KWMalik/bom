@@ -20,7 +20,7 @@ The last observation was <strong><%= @summary["last_temp"] %>&deg;C</strong> at 
 </p>
 
 <p>
-  <img src="<%=make_day_temp_graph_img_url(@temp_data) -%>" />
+  <img src="<%=make_day_temp_graph_img_url(@temp_data, "Today's Temperature") -%>" />
 </p>
 
 <p>
@@ -33,8 +33,6 @@ The last observation was <strong><%= @summary["last_temp"] %>&deg;C</strong> at 
 <p>
 <strong>TODOs</strong>
 <ul>
-  <li>User selection of weather station (not hard coded to melbourne)</li>
-  <li>Unclutter x axis labels.</li>
   <li>Separate y-axis labels from scaling method (nice/consistent labels)</li>
   <li>Moving average? Regression?</li>
   <li>Include forecast high and low?</li>

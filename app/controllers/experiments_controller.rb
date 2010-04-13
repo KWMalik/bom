@@ -21,10 +21,13 @@ class ExperimentsController < ApplicationController
   
   # recent days  
   def temp2
-    @jsonurl = "http://www.bom.gov.au/fwo/IDV60801/IDV60801.94868.json"
-    buffer = open(@jsonurl, "UserAgent" => "Ruby").read    
-    @document = JSON.parse(buffer)
-    @temp_data = get_all_data_by_day(@document)
+    # default to melbourne
+    params[:station_id] = "2" if params[:station_id].nil?
+    @station = Station.find(:first, :conditions=>['id=?', params[:station_id]])
+    @stations = Station.find(:all, :order=>"name")  
+  
+    doc = download_and_parse_json(@station.url)
+    @temp_data = get_all_data_by_day(doc)
   end
   
   

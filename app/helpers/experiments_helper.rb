@@ -1,30 +1,8 @@
 module ExperimentsHelper
-
-  # see: http://code.google.com/apis/chart/docs/gallery/line_charts.html
-  
   
   #
-  # labels for 24 hours
-  #
-  def get_full_day_labels()
-    am, pm = [], []
-    12.times do |i|
-      hour = (i==0) ? "12" : ((i<10) ? "0#{i}" : i.to_s)
-      am << "#{hour}:00am"
-      am << "#{hour}:30am"
-      pm << "#{hour}:00pm"
-      pm << "#{hour}:30pm"
-    end
-    return am+pm
-  end
-
-
-  def get_time_labels
-    return ["12:00am", "03:00am", "06:00am", "09:00am", "12:00pm", "03:00pm", "06:00pm", "09:00pm", "12:00pm"]
-  end
-  
-  
-  
+  # a number of contigious days concat together in a single series
+  #  
   def make_multi_day_sequence_graph_img_url(data)
     # create temp arrays and a union of all temps
     temps = {}
@@ -77,7 +55,7 @@ module ExperimentsHelper
     # series colors
     base << "chco=00FF00,0000FF,FF0000,000000&"
     # graph title
-    base << "chtt=Melbourne Temperatures&"
+    base << "chtt=Temperatures (last 4 days)&"
     # graph type
     base << "cht=lc&"
     # visible axes
@@ -97,8 +75,8 @@ module ExperimentsHelper
     return base    
   end
   
-  # 
-  # graph of all recent days temperatures
+  #
+  # a number of contigious days, each a separate series
   #
   def make_multiday_temp_graph_img_url(data)
     # create temp arrays and a union of all temps
@@ -145,9 +123,9 @@ module ExperimentsHelper
     # graph size
     base << "chs=600x240&"
     # series colors
-    base << "chco=00FF00,0000FF,FF0000,000000&"
+    base << "chco=#{html_colors(keys.length).join(',')}&"
     # graph title
-    base << "chtt=Melbourne Temperatures&"
+    base << "chtt=Temperatures (last 4 days)&"
     # graph type
     base << "cht=lc&"
     # visible axes
@@ -174,14 +152,11 @@ module ExperimentsHelper
     return base
   end
   
-  
-  
 
-  
   #
-  # graph of today's temperature (server time today)
+  # graph one day's temperature
   #
-  def make_day_temp_graph_img_url(data)
+  def make_day_temp_graph_img_url(data, title="Temperature")
     # array of temp data
     temp, union = [], []
     data.each do |rec| 
@@ -213,7 +188,7 @@ module ExperimentsHelper
     # series colors
     base << "chco=000000&"
     # graph title
-    base << "chtt=Melbourne Temperature&"
+    base << "chtt=#{title}&"
     # graph type
     base << "cht=lc&"
     # visible axes
@@ -340,12 +315,35 @@ module ExperimentsHelper
   end
   
   
-  
-  
+  #
+  # get a list of html colors
+  #
   def html_colors(total)
     all_colors = ["FF0000", "00FF00", "0000FF", "00FFFF", "FF00FF", "FFFF00"]
     return [] if total > all_colors.length
     return Array.new(total){|i| all_colors[i]}
   end
+    
+  #
+  # labels for 24 hours
+  #
+  def get_full_day_labels()
+    am, pm = [], []
+    12.times do |i|
+      hour = (i==0) ? "12" : ((i<10) ? "0#{i}" : i.to_s)
+      am << "#{hour}:00am"
+      am << "#{hour}:30am"
+      pm << "#{hour}:00pm"
+      pm << "#{hour}:30pm"
+    end
+    return am+pm
+  end
+
+  #
+  # labels for 1 day time graphs
+  #
+  def get_time_labels
+    return ["12:00am", "03:00am", "06:00am", "09:00am", "12:00pm", "03:00pm", "06:00pm", "09:00pm", "12:00pm"]
+  end  
   
 end
