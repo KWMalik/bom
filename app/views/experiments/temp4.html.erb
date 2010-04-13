@@ -1,9 +1,16 @@
 <div class="subtitle">Temperature Experiment 4</div>
 
 <p>
-A graph of Today's temperature in <strong>Melbourne, Victoria, Australia</strong>
-with data from the BOM and local sensors.
+A graph of Today's temperature from the BOM station: <strong><%= @station.name %></strong>
+against the data from local sensors.
 </p>
+
+<% form_tag experiment4_path, :method => 'get' do %>
+    Station: <%= select_tag(:station_id, options_from_collection_for_select(@stations, :id, :name, params[:station_id].to_i)) %>
+    <%= submit_tag "change", :name => nil %>
+<% end %>
+</p>
+<hr />
 
 <p>
   <strong>Today (observations from <%= @results_today.length %> local stations)</strong> <br />

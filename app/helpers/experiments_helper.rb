@@ -53,7 +53,7 @@ module ExperimentsHelper
     # graph size
     base << "chs=600x240&"
     # series colors
-    base << "chco=00FF00,0000FF,FF0000,000000&"
+    base << "chco=#{html_colors(1).join(',')}&"
     # graph title
     base << "chtt=Temperatures (last 4 days)&"
     # graph type
@@ -186,7 +186,7 @@ module ExperimentsHelper
     # graph size
     base << "chs=600x240&"
     # series colors
-    base << "chco=000000&"
+    base << "chco=#{html_colors(1).join(',')}&"
     # graph title
     base << "chtt=#{title}&"
     # graph type

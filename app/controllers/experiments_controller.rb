@@ -30,7 +30,7 @@ class ExperimentsController < ApplicationController
     @temp_data = get_all_data_by_day(doc)
   end
   
-  
+  # reception point for local sensor data
   def temp3
     if !params[:name].nil? and !params[:temp].nil?
       # do manually instead of the rails way
@@ -43,20 +43,23 @@ class ExperimentsController < ApplicationController
     end
   end
   
-
-
-
+  # graph local sensor data
   def temp4    
+    # default to melbourne
+    params[:station_id] = "2" if params[:station_id].nil?
+    @station = Station.find(:first, :conditions=>['id=?', params[:station_id]])
+    @stations = Station.find(:all, :order=>"name")   
+  
     #load sensor data
     @results_today = get_all_local_sensors_by_date(Date.today, Date.today+1)
     @results_yesterday = get_all_local_sensors_by_date(Date.today-1, Date.today)
     # load bom data
-    doc = download_and_parse_json("http://www.bom.gov.au/fwo/IDV60801/IDV60801.94868.json")
+    doc = download_and_parse_json(@station.url)
     @bom_today = get_today_data(doc)
     @bom_yesterday = get_yesterday_data(doc)
   end
   
-  
+  # summarize local stations
   def temp5
     @average = Sensor.average(:temp, :group=>"name", :order=>"name")
     @count = Sensor.count(:temp, :group=>"name", :order=>"name")

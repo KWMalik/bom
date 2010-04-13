@@ -11,23 +11,24 @@ A graph of temperature from recent days from: <strong><%= @station.name %></stro
 </p>
 <hr />
 
+
 <p>
-There were <%= @temp_data.size %> days of observations.
+  A graph temperature from the last four days, each day as a separate series. 
 </p>
+<img src="<%=make_multiday_temp_graph_img_url(@temp_data) -%>" />
+<br/ >
 
+<hr />
 <p>
-  <img src="<%=make_multiday_temp_graph_img_url(@temp_data) -%>" />
+  A graph of temperature from the lat four days as a single series.  
 </p>
-
-<p>
-  <img src="<%=make_multi_day_sequence_graph_img_url(@temp_data) -%>" />
-</p>
+<img src="<%=make_multi_day_sequence_graph_img_url(@temp_data) -%>" />
+<br />
 
 
 <p>
-  The data comes from the <%= link_to "Latest Weather Observations for Melbourne", "http://www.bom.gov.au/products/IDV60801/IDV60801.94868.shtml" %>.
-  <br />
-  See the <%= link_to "JSON Source", @station.url %>.
+  
+  Data is from the BOM, see the <%= link_to "JSON Source", @station.url %>.
 </p>
 
 
