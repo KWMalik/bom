@@ -9,11 +9,22 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20100407225942) do
+ActiveRecord::Schema.define(:version => 20100413032105) do
 
   create_table "sensors", :force => true do |t|
     t.string   "name"
     t.float    "temp"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
+  create_table "stations", :force => true do |t|
+    t.string   "name"
+    t.float    "lat"
+    t.float    "long"
+    t.float    "height"
+    t.boolean  "bom"
+    t.string   "url"
     t.datetime "created_at"
     t.datetime "updated_at"
   end

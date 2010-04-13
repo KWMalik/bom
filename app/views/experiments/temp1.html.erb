@@ -23,6 +23,17 @@ The last observation was <strong><%= @summary["last_temp"] %>&deg;C</strong> at 
   See the <%= link_to "JSON Source", @jsonurl %>.
 </p>
 
+
+Change Station: 
+<% form_for "station", :url => experiment1_path do |f| %>
+  <%= f.select("id", Station.all.collect {|p| [ p.name, p.id ] }) %>
+  <%= f.submit 'Change' %>
+<% end %>
+
+
+
+
+
 <br />
 <p>
 <strong>TODOs</strong>

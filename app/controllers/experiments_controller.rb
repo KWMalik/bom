@@ -8,11 +8,15 @@ class ExperimentsController < ApplicationController
   # display today's temp as a graph
   def temp1
     @jsonurl = "http://www.bom.gov.au/fwo/IDV60801/IDV60801.94868.json"
-    buffer = open(@jsonurl, "UserAgent" => "Ruby").read    
-    @document = JSON.parse(buffer)
+    
+    @document = download_and_parse_json(@jsonurl)
     @temp_data = get_today_data(@document)
     @summary = summary_for_day_temp_data(@temp_data)
+    
+    params[:station_id] = "2" if params[:station_id].nil?
   end
+  
+
   
   # recent days  
   def temp2
@@ -69,6 +73,13 @@ class ExperimentsController < ApplicationController
 
   private
   
+  
+  
+  def download_and_parse_json(url)
+    buffer = open(url, "UserAgent"=>"Ruby").read
+    doc = JSON.parse(buffer)
+    return doc
+  end
   
 
   

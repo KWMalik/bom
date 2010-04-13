@@ -1,0 +1,40 @@
+<div class="subtitle">Temperature Experiment 5</div>
+
+<p>
+This page provides station summary statistics.
+</p>
+<br />
+
+<p>
+  <strong>Observation summary statistics by site/station</strong>
+</p>
+
+<table width="800">
+<tr align="left">
+  <th>Station/Site</th>
+  <th>Avg Temp</th>
+  <th>Min Temp</th>
+  <th>Max Temp</th>
+  <th># Obs</th>
+</tr>
+<% @average.each do |name, avg| %>
+  <tr align="left">
+    <td><%= name %></td>
+    <td><%= avg.round(3) %>&deg;C</td>
+    <td><%= @min[name].round(3) %>&deg;C</td>
+    <td><%= @max[name].round(3) %>&deg;C</td>
+    <td><%= @count[name] %></td>
+  </tr>
+<% end %>
+</table>
+
+
+
+
+<br />
+<p>
+<strong>TODOs</strong>
+<ul>
+  <li>graph of average temp per day per station</li>
+</ul>
+</p>
