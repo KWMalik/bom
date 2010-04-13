@@ -3,14 +3,20 @@
 <p>
 A graph of Today's temperature at <strong><%= @station.name %></strong>.
 </p>
+<p>
+ 
+<% form_tag experiment1_path, :method => 'get' do %>
+    Station: <%= select_tag(:station_id, options_from_collection_for_select(@stations, :id, :name, params[:station_id].to_i)) %>
+    <%= submit_tag "change", :name => nil %>
+<% end %>
+</p>
+<hr />
 
 
 <p>
 There were <strong><%= @summary["total"] %></strong> observations for today between <strong><%= @summary["start_time"] %></strong> and <strong><%= @summary["end_time"] %></strong>. <br />
 The low was <strong><%= @summary["min"] %>&deg;C</strong>, the high was <strong><%= @summary["max"] %>&deg;C</strong>, the mean temperature was <strong><%= @summary["mean"].round(1) %>&deg;C</strong>. <br />
 The last observation was <strong><%= @summary["last_temp"] %>&deg;C</strong> at <strong><%= @summary["last_time"] %></strong> (<%= (Time.now-Time.parse(@summary["last_time"])).to_i/60 %> minutes ago).
-
-
 </p>
 
 <p>
@@ -20,15 +26,6 @@ The last observation was <strong><%= @summary["last_temp"] %>&deg;C</strong> at 
 <p>
   Data is from the BOM, see the <%= link_to "JSON Source", @station.url %>.
 </p>
-
-
-Change Station: 
-<% form_tag experiment1_path, :method => 'get' do %>
-  <p>
-    <%= select_tag(:station_id, options_from_collection_for_select(@stations, :id, :name, params[:station_id].to_i)) %>
-    <%= submit_tag "change", :name => nil %>
-  </p>
-<% end %>
 
 
 

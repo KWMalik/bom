@@ -6,13 +6,13 @@ with data from the BOM and local sensors.
 </p>
 
 <p>
-  <strong>Today (total observations=<%= @sensors_today.length %>)</strong> <br />
-  <img src="<%=make_day_sensors_graph_img_url(@sensors_today, "Today", @bom_today) -%>" />
+  <strong>Today (observations from <%= @results_today.length %> local stations)</strong> <br />
+  <img src="<%=make_day_sensors_graph_img_url(@results_today, "Today", @bom_today) -%>" />
 </p>
 
 <p>
   <strong>Yesterday (total observations=<%= @sensors_yesterday.length %>)</strong><br />
-  <% if @sensors_yesterday.empty? %>
+  <% if true %>
     No data
   <% else %>
     <img src="<%=make_day_sensors_graph_img_url(@sensors_yesterday, "Yesterday", @bom_yesterday) -%>" />

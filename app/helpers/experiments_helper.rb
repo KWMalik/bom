@@ -276,75 +276,63 @@ module ExperimentsHelper
   # graph of sensor data
   #
   def make_day_sensors_graph_img_url(sensors, name, bom=nil)
-    # SENSOR
-    union = []
-    display = []
-    
-    if sensors.nil? or sensors.empty?
-      (48-display.length).times { display << "_"}
-    else
-      bins = descretize_sensor_data(sensors)
-      bins.each do |record| 
-        if record[:count] > 0
-          t = record[:temp] / record[:count].to_f
-          union << t
-          display << t
-        else 
-          display << '_'
+    temp_union = []
+    datasets = {}
+    # process sensor data (if provided)
+    if !sensors.nil? and !sensors.empty?
+      sensors.keys.each do |station|
+        bins = descretize_sensor_data(sensors[station])
+        datasets[station] = []
+        bins.each do |record| 
+          if record[:count] > 0
+            t = record[:temp] / record[:count].to_f
+            temp_union << t
+            datasets[station] << t
+          else 
+            datasets[station] << '_'
+          end
         end
       end
-      station = sensors.first.name
-    end
-    
-    # BOM
-    bom_data = []
-    if !bom.nil?
+    end    
+    # process bom data (if provided)
+
+    if !bom.nil? and !bom.empty?
+      datasets["BoM"] = []
       bom.each do |rec| 
         if rec[0].nil?
-          temp << '_'
+          datasets["BoM"] << '_'
         else      
-          bom_data << rec[0].to_f
-          union << rec[0].to_f
+          datasets["BoM"] << rec[0].to_f
+          temp_union << rec[0].to_f
         end
       end
+      (48-datasets["BoM"].length).times { datasets["BoM"] << "_"}
     end
-    # block out today
-   (48-bom_data.length).times { bom_data << "_"}
-    
-    min, max, avg = union.min, union.max, union.sum/union.size.to_f
+
+    min, max = temp_union.min, temp_union.max
     range = max-min
-    summary = [min, max, avg]
     
     base = "http://chart.apis.google.com/chart?"
     # graph size
     base << "chs=600x240&"
     # series colors
-    base << "chco=000000,FF0000&"
+    base << "chco=000000,FF0000,00FF00,0000FF&"
     # graph title
     base << "chtt=Sensor Temperatures: #{name}&"
     # graph type
     base << "cht=lc&"
     # visible axes
-#    base << "chxt=x,y,r&"
     base << "chxt=x,y&"
-    # axis label styles
-#    base << "chxs=2,0000DD,9,-1,t,CCCCCC&"
-    # axis tick mark styles
-    #base << "chxtc=0,10|1,10|2,-600&"    
-    # axis names
-    #base << "chl=Temperature|Time&"
     # axis ranges
-    base << "chxr=1,#{min},#{max},#{(range)/10.0}&"  
-    # axis labels
-#    base << "chxl=2:|min|max|mean|&"
-    # axis label positions (!!!not working for axis 0!!!) => 0,#{display_time_labels.join(',')}|
-#    base << "chxp=2,#{summary.join(',')}&"
+    base << "chxr=1,#{min},#{max},#{(range)/10.0}&"
     # range for scaling data
     base << "chds=#{min},#{max}&"
     # data legend
-    base << "chdl=Local(#{station})|Bom&"
+    base << "chdl=#{datasets.keys.join('|')}&"
     # data
-    base << "chd=t:#{display.join(',')}|#{bom_data.join(',')}"
+    serieses = []
+    datasets.keys.each {|key| serieses << datasets[key].join(',') }
+    base << "chd=t:#{serieses.join('|')}"
 
     return base  
   end
