@@ -1,7 +1,7 @@
 <div class="subtitle">Temperature Experiment 1</div>
 
 <p>
-A graph of Today's temperature in <strong>Melbourne, Victoria, Australia</strong>.
+A graph of Today's temperature at <strong><%= @station.name %></strong>.
 </p>
 
 
@@ -18,19 +18,17 @@ The last observation was <strong><%= @summary["last_temp"] %>&deg;C</strong> at 
 </p>
 
 <p>
-  The data comes from the <%= link_to "Latest Weather Observations for Melbourne", "http://www.bom.gov.au/products/IDV60801/IDV60801.94868.shtml" %>.
-  <br />
-  See the <%= link_to "JSON Source", @jsonurl %>.
+  Data is from the BOM, see the <%= link_to "JSON Source", @station.url %>.
 </p>
 
 
 Change Station: 
-<% form_for "station", :url => experiment1_path do |f| %>
-  <%= f.select("id", Station.all.collect {|p| [ p.name, p.id ] }) %>
-  <%= f.submit 'Change' %>
+<% form_tag experiment1_path, :method => 'get' do %>
+  <p>
+    <%= select_tag(:station_id, options_from_collection_for_select(@stations, :id, :name, params[:station_id].to_i)) %>
+    <%= submit_tag "change", :name => nil %>
+  </p>
 <% end %>
-
-
 
 
 

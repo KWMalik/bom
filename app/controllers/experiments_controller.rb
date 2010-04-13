@@ -7,13 +7,14 @@ class ExperimentsController < ApplicationController
   
   # display today's temp as a graph
   def temp1
-    @jsonurl = "http://www.bom.gov.au/fwo/IDV60801/IDV60801.94868.json"
-    
-    @document = download_and_parse_json(@jsonurl)
-    @temp_data = get_today_data(@document)
-    @summary = summary_for_day_temp_data(@temp_data)
-    
+    # default to melbourne
     params[:station_id] = "2" if params[:station_id].nil?
+    @station = Station.find(:first, :conditions=>['id=?', params[:station_id]])
+    @stations = Station.find(:all, :order=>"name")        
+    
+    doc = download_and_parse_json(@station.url)
+    @temp_data = get_today_data(doc)
+    @summary = summary_for_day_temp_data(@temp_data)
   end
   
 
