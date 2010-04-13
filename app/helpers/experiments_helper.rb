@@ -311,12 +311,13 @@ module ExperimentsHelper
 
     min, max = temp_union.min, temp_union.max
     range = max-min
+    num_series = datasets.keys.length
     
     base = "http://chart.apis.google.com/chart?"
     # graph size
     base << "chs=600x240&"
     # series colors
-    base << "chco=000000,FF0000,00FF00,0000FF&"
+    base << "chco=#{html_colors(num_series).join(',')}&"
     # graph title
     base << "chtt=Sensor Temperatures: #{name}&"
     # graph type
@@ -338,5 +339,12 @@ module ExperimentsHelper
   end
   
   
+  
+  
+  def html_colors(total)
+    all_colors = ["FF0000", "00FF00", "0000FF", "00FFFF", "FF00FF", "FFFF00"]
+    return [] if total > all_colors.length
+    return Array.new(total){|i| all_colors[i]}
+  end
   
 end
