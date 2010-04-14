@@ -19,7 +19,7 @@ This page provides station summary statistics.
 </tr>
 <% @average.each do |name, avg| %>
   <tr align="left">
-    <td><%= name %></td>
+    <td><%= link_to name, {:action=>"temp6", :name=>name} %></td>
     <td><%= avg.round(3) %>&deg;C</td>
     <td><%= @min[name].round(3) %>&deg;C</td>
     <td><%= @max[name].round(3) %>&deg;C</td>

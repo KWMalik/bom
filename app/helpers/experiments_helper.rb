@@ -40,8 +40,8 @@ module ExperimentsHelper
     (48-temps[keys.first].length).times { temps[keys.first].unshift("_")}
     # block out today
     (48-temps[keys.last].length).times { temps[keys.last] << "_" }
-    # labels
-    time_labels = get_time_labels
+    # labels (really rough, may not be accurate)
+    time_labels = ["12:00am", "12:00pm", "12:00am", "12:00pm", "12:00am", "12:00pm", "12:00am", "12:00pm"]
     
     #build master temp list
     all_temps = []
@@ -67,7 +67,7 @@ module ExperimentsHelper
     # axis ranges
     base << "chxr=1,#{min},#{max},#{(range)/10.0}&"  
     # axis labels
-    base << "chxl=2:|min|mean|max|&"
+    base << "chxl=0:|#{time_labels.join('|')}|2:|min|mean|max|&"
     # axis label positions
     base << "chxp=2,#{summary.join(',')}&"
     base << "chd=t:#{all_temps.join(',')}"
@@ -343,7 +343,7 @@ module ExperimentsHelper
   # labels for 1 day time graphs
   #
   def get_time_labels
-    return ["12:00am", "03:00am", "06:00am", "09:00am", "12:00pm", "03:00pm", "06:00pm", "09:00pm", "12:00pm"]
+    return ["12:00am", "03:00am", "06:00am", "09:00am", "12:00pm", "03:00pm", "06:00pm", "09:00pm", "12:00am"]
   end  
   
 end

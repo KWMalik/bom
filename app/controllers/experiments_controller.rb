@@ -69,6 +69,11 @@ class ExperimentsController < ApplicationController
   end
   
   
+  def temp6
+    @name = params[:name]
+    
+    
+  end
   
   
 

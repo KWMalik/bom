@@ -1,21 +1,27 @@
 == BOM Project
 
-A simple web application (rails) to play with data provided by the Australian Bureau 
+A simple web application (rails) to play with temperature data provided by the Australian Bureau 
 of Meteorology.
 
+Provides graphs of temperature in Australian Local cities, provides a data collection
+point for local temperature sensors (such as in an office), and provides graphs
+of local temperature compared to capital city temperature.
 
 == Jumpstart
 
-1. Chekout code (assumes you already have git installed)
+Assumes you have git installed and a viable Ruby on Rails environment, version 2.3.5.
+
+1. Checkout code.
   >git clone git://github.com/jbrownlee/bom.git
-2. Install Rails 2.3.5 (consider installing the RPM if on linux)  
-  >sudo gem install rails
-3. Install required gems (consider installing the RPM for JSON if on linux)  
-  >sudo gem install json
-4. Run:
+2. Install required ruby gems.
+  >sudo gem install json  
+3. Configure database.
   >cd bom
+  >rake db:setup 
+4. Run.
   >script/server
-5. Test (in a browser): http://localhost:3000
+5. Test (in a browser) 
+  > http://localhost:3000
 
 
 == License
