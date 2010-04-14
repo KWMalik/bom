@@ -72,6 +72,7 @@ class ExperimentsController < ApplicationController
   def temp6
     @name = params[:name]
     
+    @week = get_local_sensors_by_name_last_week(@name)
     
   end
   
@@ -89,6 +90,20 @@ class ExperimentsController < ApplicationController
     names.each do |s|
       results[s.name] =  Sensor.find(:all, :conditions=>["created_at between ? and ? AND name=?", start_date.to_time.utc, end_date.to_time.utc, s.name], :order=>"created_at");
     end
+    return results
+  end
+  
+  def get_local_sensors_by_name_last_week(name)
+    results = []
+    7.times do |i|
+      date = Date.today - i.days
+      record = {}
+      record[:date] = date
+      record[:sensors] = Sensor.find(:all, 
+        :conditions=>["created_at between ? and ? AND name=?", date.to_time.utc, (date+1).to_time.utc, name], 
+        :order=>"created_at");      
+      results << record
+    end  
     return results
   end
 

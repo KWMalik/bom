@@ -1,6 +1,24 @@
 <div class="subtitle">Temperature Experiment 6</div>
 
 <p>
-Graphs for location station: <strong><%= @name %></strong>
-</p>
+Graphs for location station: <strong><%= @name %></strong>.
 <br />
+<small>(This will KILL the database)</small>
+</p>
+
+<p>
+A summary of temperature over the last 7 days.
+</p>
+<img src="<%=sensor_summary_graph(@week, "Last 7 Days") -%>" />
+
+
+
+
+<br />
+<p>
+<strong>TODOs</strong>
+<ul>
+  <li>Show graphs as boxplots</li>
+  <li>Show last week, month, year</li>
+</ul>
+</p>

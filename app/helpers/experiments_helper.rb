@@ -1,4 +1,66 @@
 module ExperimentsHelper
+
+  #
+  # summary of sensor data.
+  # expects: data[]{:data,:sensors[...]}
+  #
+  def sensor_summary_graph(data, title)
+    temp_union = []
+    datasets = {}
+    # process sensor data (if provided)
+    if !data.nil? and !data.empty?
+      data.each do |r|
+        bins = descretize_sensor_data(r[:sensors])
+        key = r[:date].strftime("%d/%m")
+        datasets[key] = []
+        bins.each do |record| 
+          if record[:count] > 0
+            t = record[:temp] / record[:count].to_f
+            temp_union << t
+            datasets[key] << t
+          else 
+            datasets[key] << '_'
+          end
+        end
+      end
+    end     
+    min, max = temp_union.min, temp_union.max
+    range = max-min
+    num_series = datasets.keys.length
+    time_labels = get_time_labels
+    
+    ordering = datasets.keys.sort
+  
+    base = "http://chart.apis.google.com/chart?"
+    # graph size
+    base << "chs=600x240&"
+    # series colors
+    base << "chco=#{html_colors(num_series).join(',')}&"
+    # graph title
+    base << "chtt=Sensor Temperatures: #{title}&"
+    # graph type
+    base << "cht=lc&"
+    # visible axes
+    base << "chxt=x,y&"
+    # axis ranges
+    base << "chxr=1,#{min},#{max},#{(range)/10.0}&"
+    # range for scaling data
+    base << "chds=#{min},#{max}&"
+    # axis labels
+    base << "chxl=0:|#{time_labels.join('|')}&"
+  
+    # http://code.google.com/apis/chart/docs/gallery/compound_charts.html#box_charts
+    #base << "chm=F,0000FF,0,1,10|F,0000FF,0,1,10|F,0000FF,0,1,10|F,0000FF,0,1,10|F,0000FF,0,1,10|F,0000FF,0,1,10|F,0000FF,0,1,10&"
+  
+    # data legend
+    base << "chdl=#{ordering.join('|')}&"
+    # data
+    serieses = []
+    ordering.each {|key| serieses << datasets[key].join(',')}
+    base << "chd=t:#{serieses.join('|')}"
+    
+    return base
+  end
   
   #
   # a number of contigious days concat together in a single series
@@ -319,8 +381,8 @@ module ExperimentsHelper
   # get a list of html colors
   #
   def html_colors(total)
-    all_colors = ["FF0000", "00FF00", "0000FF", "00FFFF", "FF00FF", "FFFF00"]
-    return [] if total > all_colors.length
+    all_colors = ["FF0000", "00FF00", "0000FF", "00FFFF", "FF00FF", "FFFF00", "000000"]
+    #return [] if total > all_colors.length
     return Array.new(total){|i| all_colors[i]}
   end
     
