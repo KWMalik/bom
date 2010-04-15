@@ -10,18 +10,44 @@ Graphs for location station: <strong><%= @name %></strong>.
 <p>
 Temperature over recent days summarized as a <%= link_to "boxplots", "http://en.wikipedia.org/wiki/Box_plot" %>. 
 Box shows the 25th and 75th percentiles of the data, the line in the box shows the central tendency, and the whiskers show the extrema of the data.
-Outliers are not consider for now.
+Outliers are not considered for now.
 </p>
-<img src="<%=sensor_summary_graph(@week, "Recent Days") -%>" />
 
+<p>
+<strong>Temperature Over Recent Days</strong><br />
+<% if @week.nil? or @week.empty? %>
+  No Data.
+<% else %>
+  <img src="<%=sensor_summary_graph(@week, "Recent Days") -%>" />
+<% end %>
+<br />
+</p>
 
+<p>
+<strong>Temperature Over Recent Weeks</strong><br />
+<% if true %>
+  No Data.
+<% else %>
+  No Data.
+<% end %>
+<br />
+</p>
 
+<p>
+<strong>Temperature Over Recent Months</strong><br />
+<% if true %>
+  No Data.
+<% else %>
+  No Data.
+<% end %>
+<br />
+</p>
 
 <br />
 <p>
 <strong>TODOs</strong>
 <ul>
-  <li>Show meaningful x axis for boxplots</li>
-  <li>Show last week, month, year</li>
+  <li>Show weeks, months</li>
+  <li>Provide overview stats</li>
 </ul>
 </p>

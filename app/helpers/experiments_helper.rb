@@ -4,7 +4,7 @@ module ExperimentsHelper
   # summary of sensor data.
   # expects: data[]{:data,:sensors[...]}
   #
-  def sensor_summary_graph(data, title)
+  def sensor_summary_graph(data, title)  
     temp_union = []
     datasets = {}
     temps = {}
