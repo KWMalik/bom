@@ -1,15 +1,14 @@
 <div class="subtitle">Temperature Experiment 6</div>
 
 <p>
-Graphs for location station: <strong><%= @name %></strong>.
+Graphs for station: <strong><%= @name %></strong>.
 <br />
-<small>(This will KILL the database)</small>
 </p>
 
 
 <p>
-Temperature over recent days summarized as a <%= link_to "boxplots", "http://en.wikipedia.org/wiki/Box_plot" %>. 
-Box shows the 25th and 75th percentiles of the data, the line in the box shows the central tendency, and the whiskers show the extrema of the data.
+This page shows temperature data summarized as a <%= link_to "boxplots", "http://en.wikipedia.org/wiki/Box_plot" %>. 
+The box shows the 25th and 75th percentiles of the data, the line in the box shows the central tendency, and the whiskers show the extrema of the data.
 Outliers are not considered for now.
 </p>
 
