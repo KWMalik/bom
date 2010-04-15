@@ -6,10 +6,13 @@ Graphs for location station: <strong><%= @name %></strong>.
 <small>(This will KILL the database)</small>
 </p>
 
+
 <p>
-A summary of temperature over the last 7 days.
+Temperature over recent days summarized as a <%= link_to "boxplots", "http://en.wikipedia.org/wiki/Box_plot" %>. 
+Box shows the 25th and 75th percentiles of the data, the line in the box shows the central tendency, and the whiskers show the extrema of the data.
+Outliers are not consider for now.
 </p>
-<img src="<%=sensor_summary_graph(@week, "Last 7 Days") -%>" />
+<img src="<%=sensor_summary_graph(@week, "Recent Days") -%>" />
 
 
 
@@ -18,7 +21,7 @@ A summary of temperature over the last 7 days.
 <p>
 <strong>TODOs</strong>
 <ul>
-  <li>Show graphs as boxplots</li>
+  <li>Show meaningful x axis for boxplots</li>
   <li>Show last week, month, year</li>
 </ul>
 </p>

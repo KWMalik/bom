@@ -7,17 +7,19 @@ module ExperimentsHelper
   def sensor_summary_graph(data, title)
     temp_union = []
     datasets = {}
+    temps = {}
     # process sensor data (if provided)
     if !data.nil? and !data.empty?
       data.each do |r|
         bins = descretize_sensor_data(r[:sensors])
         key = r[:date].strftime("%d/%m")
-        datasets[key] = []
+        datasets[key], temps[key] = [], []
         bins.each do |record| 
           if record[:count] > 0
             t = record[:temp] / record[:count].to_f
-            temp_union << t
-            datasets[key] << t
+            temp_union << t.round(3)
+            datasets[key] << t.round(3)
+            temps[key] << t.round(3)
           else 
             datasets[key] << '_'
           end
@@ -26,16 +28,37 @@ module ExperimentsHelper
     end     
     min, max = temp_union.min, temp_union.max
     range = max-min
-    num_series = datasets.keys.length
-    time_labels = get_time_labels
+
     
     ordering = datasets.keys.sort
+    labels = []
+
+    data = {}
+    data[:min] = []
+    data[:max] = []
+    data[:q1] = []
+    data[:q3] = []
+    data[:med] = []
+        
+    data.keys.each {|k| data[k] << -1}    
+    labels << ""
+    ordering.each do |key|
+      next if temps[key].empty?
+      labels << key
+      data[:min] << temps[key].min
+      data[:max] << temps[key].max
+      data[:q1] << excel_lower_quartile(temps[key])
+      data[:q3] << excel_upper_quartile(temps[key])
+      data[:med] << excel_middle_quartile(temps[key])
+    end
+    data.keys.each {|k| data[k] << -1}
+    labels << ""
+    
+    num = data[:min].length - 1
   
     base = "http://chart.apis.google.com/chart?"
     # graph size
     base << "chs=600x240&"
-    # series colors
-    base << "chco=#{html_colors(num_series).join(',')}&"
     # graph title
     base << "chtt=Sensor Temperatures: #{title}&"
     # graph type
@@ -47,18 +70,29 @@ module ExperimentsHelper
     # range for scaling data
     base << "chds=#{min},#{max}&"
     # axis labels
-    base << "chxl=0:|#{time_labels.join('|')}&"
-  
-    # http://code.google.com/apis/chart/docs/gallery/compound_charts.html#box_charts
-    #base << "chm=F,0000FF,0,1,10|F,0000FF,0,1,10|F,0000FF,0,1,10|F,0000FF,0,1,10|F,0000FF,0,1,10|F,0000FF,0,1,10|F,0000FF,0,1,10&"
-  
+    base << "chxl=0:|#{labels.join('|')}&"
     # data legend
-    base << "chdl=#{ordering.join('|')}&"
-    # data
-    serieses = []
-    ordering.each {|key| serieses << datasets[key].join(',')}
-    base << "chd=t:#{serieses.join('|')}"
+    #base << "chdl=#{ordering.join('|')}&"
     
+    
+
+    # build series
+    serieses = []
+    serieses << data[:min].join(',')
+    serieses << data[:q1].join(',')
+    serieses << data[:q3].join(',')
+    serieses << data[:max].join(',')
+    serieses << data[:med].join(',')
+    base << "chd=t0:#{serieses.join('|')}&"    
+    
+    # build display
+    display = []
+    display << "F,FF0000,0,1:#{num},40"
+    display << "H,FF0000,0,1:#{num},1:20"
+    display << "H,FF0000,3,1:#{num},1:20"
+    display << "H,000000,4,1:#{num},1:40"
+    base << "chm=#{display.join('|')}"
+        
     return base
   end
   
@@ -280,6 +314,7 @@ module ExperimentsHelper
       d = date + diff.minutes
       min = (d.min<10) ? "0#{d.min}" : d.min.to_s
       hour = (d.hour>12) ? d.hour-12 : d.hour
+      hour = 12 if hour == 0
       hour = (hour<10) ? "0#{hour}" : hour.to_s
       m = d.strftime("%p").downcase
       return "#{hour}:#{min}#{m}"
@@ -408,4 +443,32 @@ module ExperimentsHelper
     return ["12:00am", "03:00am", "06:00am", "09:00am", "12:00pm", "03:00pm", "06:00pm", "09:00pm", "12:00am"]
   end  
   
+  
+  # http://stackoverflow.com/questions/1744525/ruby-percentile-calculations-to-match-excel-formulas-need-refactor
+  def excel_quartile(array, quartile)
+    # Returns nil if array is empty and covers the case of array.length == 1
+    return array.first if array.length <= 1
+    sorted = array.sort
+    # The 4th quartile is always the last element in the sorted list.
+    return sorted.last if quartile == 4
+    # Source: http://mathworld.wolfram.com/Quartile.html
+    quartile_position = 0.25 * (quartile*sorted.length + 4 - quartile)
+    quartile_int = quartile_position.to_i
+    lower = sorted[quartile_int - 1]
+    upper = sorted[quartile_int]
+    lower + (upper - lower) * (quartile_position - quartile_int)
+  end
+
+
+  def excel_lower_quartile(array)
+    excel_quartile(array, 1)
+  end
+
+  def excel_upper_quartile(array)
+    excel_quartile(array, 3)
+  end
+  
+  def excel_middle_quartile(array)
+    excel_quartile(array, 2)
+  end  
 end
