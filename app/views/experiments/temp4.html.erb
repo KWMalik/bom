@@ -12,15 +12,62 @@ against the data from local sensors.
 </p>
 <hr />
 
+<h2>Today</h2>
 <p>
-  <strong>Today (observations from <%= @results_today.length %> local stations)</strong> <br />
-  <img src="<%=make_day_sensors_graph_img_url(@results_today, "Today", @bom_today) -%>" />
+This graph shows all local sensor observations plotted against temperature data from the BOM for today.
 </p>
+<table border=1>
+  <tr>
+    <th>Station</th>
+    <th># Obs</th>
+    <th>Avg Temp</th>
+    <th>Min Temp</th>
+    <th>Max Temp</th>
+    <th>Last Temp</th>
+  </tr>
+<% @summary_today.keys.each do |station| %>
+  <tr>
+    <td><%= link_to station, {:action=>"temp6", :name=>station} %></td>
+    <td><%= @summary_today[station]["total"] %></td>
+    <td><%= @summary_today[station]["mean"].round(3) %>&deg;C</td>
+    <td><%= @summary_today[station]["min"].round(3) %>&deg;C</td>
+    <td><%= @summary_today[station]["max"].round(3) %>&deg;C</td>
+    <td><%= @summary_today[station]["last_temp"].round(3) %>&deg;C at <%= @summary_today[station]["last_time"] %></td>
+  </tr>
+<% end %>  
+</table>
+<br />
+<img src="<%=make_day_sensors_graph_img_url(@results_today, "Today", @bom_today) -%>" />
 
+<br />
+<hr />
+<br />
+
+<h2>Recent Days</h2>
 <p>
-  <strong>Yesterday (observations from <%= @results_yesterday.length %> local stations)</strong><br />
-  <img src="<%=make_day_sensors_graph_img_url(@results_yesterday, "Yesterday", @bom_yesterday) -%>" />
+This graph shows all local sensor observations plotted against temperature data from the BOM over recent days.
 </p>
+<table border=1>
+  <tr>
+    <th>Station</th>
+    <th># Obs</th>
+    <th>Avg Temp</th>
+    <th>Min Temp</th>
+    <th>Max Temp</th>
+    <th>Last Temp</th>
+  </tr>
+<% @summary_yesterday.keys.each do |station| %>
+  <tr>
+    <td><%= link_to station, {:action=>"temp6", :name=>station} %></td>
+    <td><%= @summary_yesterday[station]["total"] %></td>
+    <td><%= @summary_yesterday[station]["mean"].round(3) %>&deg;C</td>
+    <td><%= @summary_yesterday[station]["min"].round(3) %>&deg;C</td>
+    <td><%= @summary_yesterday[station]["max"].round(3) %>&deg;C</td>
+    <td><%= @summary_yesterday[station]["last_temp"].round(3) %>&deg;C at <%= @summary_yesterday[station]["last_time"] %></td>
+  </tr>
+<% end %>  
+</table>
+<img src="<%=make_day_sensors_graph_img_url(@results_yesterday, "Recent Days", @bom_yesterday) -%>" />
 
 
 

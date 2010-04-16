@@ -52,7 +52,9 @@ class ExperimentsController < ApplicationController
   
     #load sensor data
     @results_today = get_all_local_sensors_by_date(Date.today, Date.today+1)
+    @summary_today = calculate_sensor_summary(@results_today)
     @results_yesterday = get_all_local_sensors_by_date(Date.today-1, Date.today)
+    @summary_yesterday = calculate_sensor_summary(@results_yesterday)
     # load bom data
     doc = download_and_parse_json(@station.url)
     @bom_today = get_today_data(doc)
@@ -79,6 +81,29 @@ class ExperimentsController < ApplicationController
   
 
   private
+  
+  
+  def calculate_sensor_summary(sensors)
+    data = {}
+    return data if sensors.nil? or sensors.empty?    
+    sensors.keys.each do |station|
+      temps = []
+      sensors[station].each {|s| temps << s.temp }            
+      sensors[station].sort!{|x,y| x.created_at<=>y.created_at}
+      record = {}
+      record["total"] = temps.length
+      record["min"] = temps.min
+      record["max"] = temps.max
+      record["mean"] = temps.sum/temps.length.to_f
+      record["start_time"] = sensors[station].first.created_at
+      record["end_time"] = sensors[station].last.created_at     
+      record["last_time"] = sensors[station].last.created_at
+      record["last_temp"] = sensors[station].last.temp      
+      data[station] = record
+    end
+    
+    return data
+  end
   
   
   # timezone set to melb, active record will do the magic for us i believe    
