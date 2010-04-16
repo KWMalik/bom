@@ -364,16 +364,16 @@ module ExperimentsHelper
     # process bom data (if provided)
 
     if !bom.nil? and !bom.empty?
-      datasets["BoM"] = []
+      datasets["BOM"] = []
       bom.each do |rec| 
         if rec[0].nil?
-          datasets["BoM"] << '_'
+          datasets["BOM"] << '_'
         else      
-          datasets["BoM"] << rec[0].to_f
+          datasets["BOM"] << rec[0].to_f
           temp_union << rec[0].to_f
         end
       end
-      (48-datasets["BoM"].length).times { datasets["BoM"] << "_"}
+      (48-datasets["BOM"].length).times { datasets["BOM"] << "_"}
     end
 
     min, max = temp_union.min, temp_union.max
@@ -485,7 +485,9 @@ module ExperimentsHelper
     temp_union = []
     datasets = {}
     # process sensor data (if provided)
-    if !sensors.nil? and !sensors.empty?
+    if false
+      # TODO: group by day, then by time
+    
       sensors.keys.each do |station|
         bins = descretize_sensor_data(sensors[station])
         datasets[station] = []
