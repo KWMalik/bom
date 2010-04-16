@@ -39,9 +39,11 @@ This graph shows all local sensor observations plotted against temperature data 
 <br />
 <img src="<%=make_day_sensors_graph_img_url(@results_today, "Today", @bom_today) -%>" />
 
+
 <br />
 <hr />
 <br />
+
 
 <h2>Recent Days</h2>
 <p>
@@ -56,18 +58,19 @@ This graph shows all local sensor observations plotted against temperature data 
     <th>Max Temp</th>
     <th>Last Temp</th>
   </tr>
-<% @summary_yesterday.keys.each do |station| %>
+<% @summary_recent.keys.each do |station| %>
   <tr>
     <td><%= link_to station, {:action=>"temp6", :name=>station} %></td>
-    <td><%= @summary_yesterday[station]["total"] %></td>
-    <td><%= @summary_yesterday[station]["mean"].round(3) %>&deg;C</td>
-    <td><%= @summary_yesterday[station]["min"].round(3) %>&deg;C</td>
-    <td><%= @summary_yesterday[station]["max"].round(3) %>&deg;C</td>
-    <td><%= @summary_yesterday[station]["last_temp"].round(3) %>&deg;C at <%= @summary_yesterday[station]["last_time"] %></td>
+    <td><%= @summary_recent[station]["total"] %></td>
+    <td><%= @summary_recent[station]["mean"].round(3) %>&deg;C</td>
+    <td><%= @summary_recent[station]["min"].round(3) %>&deg;C</td>
+    <td><%= @summary_recent[station]["max"].round(3) %>&deg;C</td>
+    <td><%= @summary_recent[station]["last_temp"].round(3) %>&deg;C at <%= @summary_recent[station]["last_time"] %></td>
   </tr>
 <% end %>  
 </table>
-<img src="<%=make_day_sensors_graph_img_url(@results_yesterday, "Recent Days", @bom_yesterday) -%>" />
+<br />
+<img src="<%=make_multi_day_sequence_with_sensor_graph_img_url(@results_recent, @bom_recent, "Recent Days") -%>" />
 
 
 

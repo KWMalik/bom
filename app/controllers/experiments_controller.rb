@@ -55,10 +55,17 @@ class ExperimentsController < ApplicationController
     @summary_today = calculate_sensor_summary(@results_today)
     @results_yesterday = get_all_local_sensors_by_date(Date.today-1, Date.today)
     @summary_yesterday = calculate_sensor_summary(@results_yesterday)
+    @results_recent = get_all_local_sensors_by_date(Date.today-3, Date.today+1)
+    @summary_recent = calculate_sensor_summary(@results_recent)
+
+    
+    
     # load bom data
     doc = download_and_parse_json(@station.url)
     @bom_today = get_today_data(doc)
     @bom_yesterday = get_yesterday_data(doc)
+    
+    @bom_recent = get_all_data_by_day(doc)    
   end
   
   # summarize local stations

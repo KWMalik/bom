@@ -471,4 +471,96 @@ module ExperimentsHelper
   def excel_middle_quartile(array)
     excel_quartile(array, 2)
   end  
+  
+  
+  
+  
+  #
+  # a number of contigious days concat together in a single series
+  # sensors[:station][Sensor]
+  # bom [day][records]
+  #  
+  def make_multi_day_sequence_with_sensor_graph_img_url(sensors, bom, name)
+  
+    temp_union = []
+    datasets = {}
+    # process sensor data (if provided)
+    if !sensors.nil? and !sensors.empty?
+      sensors.keys.each do |station|
+        bins = descretize_sensor_data(sensors[station])
+        datasets[station] = []
+        bins.each do |record| 
+          if record[:count] > 0
+            t = record[:temp] / record[:count].to_f
+            temp_union << t
+            datasets[station] << t
+          else 
+            datasets[station] << '_'
+          end
+        end
+      end
+    end  
+    # sort by full date
+    keys = bom.keys
+    keys.sort!{|x,y| bom[x][0][2].to_i<=>bom[y][0][2].to_i}      
+    # bom
+    datasets["BOM"] = []
+    
+    # create temp arrays and a union of all temps
+    temps = {}
+    bom.keys.each do |key|
+      temps[key] = []
+      bom[key].each do |v|
+        if v[0].nil?
+          temps[key] << '_'
+        else
+          temps[key] << v[0].to_f
+          temp_union << v[0].to_f
+        end
+
+      end      
+    end
+    # create temp summary values
+    min, max = temp_union.min, temp_union.max
+    range = max-min
+    
+    #block out oldest day
+    (48-temps[keys.first].length).times { temps[keys.first].unshift("_")}
+    # block out today
+    (48-temps[keys.last].length).times { temps[keys.last] << "_" }
+    # labels (really rough, may not be accurate)
+    time_labels = ["12:00am", "12:00pm", "12:00am", "12:00pm", "12:00am", "12:00pm", "12:00am", "12:00pm"]
+    num_series = datasets.keys.length
+    
+    #build master BOM list
+    keys.each { |key| datasets["BOM"] << temps[key] }
+    
+    base = "http://chart.apis.google.com/chart?"
+    # graph size
+    base << "chs=600x240&"
+    # series colors
+    base << "chco=#{html_colors(num_series).join(',')}&"
+    # graph title
+    base << "chtt=Sensor Temperatures: #{name}&"
+    # graph type
+    base << "cht=lc&"
+    # visible axes
+    base << "chxt=x,y&"
+    # axis ranges
+    base << "chxr=1,#{min},#{max},#{(range)/10.0}&"
+    # range for scaling data
+    base << "chds=#{min},#{max}&"
+    # axis labels
+    base << "chxl=0:|#{time_labels.join('|')}&"
+    # data legend
+    base << "chdl=#{datasets.keys.join('|')}&"
+    # data
+    serieses = []
+    datasets.keys.each {|key| serieses << datasets[key].join(',') }
+    base << "chd=t:#{serieses.join('|')}"
+
+    return base     
+        
+    return base  
+  end
 end
