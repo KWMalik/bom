@@ -8,7 +8,7 @@ class ExperimentsController < ApplicationController
   # display today's temp as a graph
   def temp1
     # default to melbourne
-    params[:station_id] = "2" if params[:station_id].nil?
+    params[:station_id] = default_station if params[:station_id].nil?
     @station = Station.find(:first, :conditions=>['id=?', params[:station_id]])
     @stations = Station.find(:all, :order=>"name")        
     
@@ -22,7 +22,7 @@ class ExperimentsController < ApplicationController
   # recent days  
   def temp2
     # default to melbourne
-    params[:station_id] = "2" if params[:station_id].nil?
+    params[:station_id] = default_station if params[:station_id].nil?
     @station = Station.find(:first, :conditions=>['id=?', params[:station_id]])
     @stations = Station.find(:all, :order=>"name")  
   
@@ -46,7 +46,7 @@ class ExperimentsController < ApplicationController
   # graph local sensor data
   def temp4    
     # default to melbourne
-    params[:station_id] = "2" if params[:station_id].nil?
+    params[:station_id] = default_station if params[:station_id].nil?
     @station = Station.find(:first, :conditions=>['id=?', params[:station_id]])
     @stations = Station.find(:all, :order=>"name")   
   
@@ -243,5 +243,11 @@ class ExperimentsController < ApplicationController
     
     return summary
   end
+  
+  # melb
+  def default_station
+    return Station.default_station.id
+  end
+
 
 end

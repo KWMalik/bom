@@ -137,7 +137,7 @@ module ExperimentsHelper
     # block out today
     (48-temps[keys.last].length).times { temps[keys.last] << "_" }
     # labels (really rough, may not be accurate)
-    time_labels = ["12:00am", "12:00pm", "12:00am", "12:00pm", "12:00am", "12:00pm", "12:00am", "12:00pm"]
+    time_labels = multi_day_labels(4)
     
     #build master temp list
     all_temps = []
@@ -309,35 +309,7 @@ module ExperimentsHelper
     return base
   end
   
-  def date_to_bin(date)  
-      diff = (date.min>30) ? 60-date.min : 30-date.min
-      d = date + diff.minutes
-      min = (d.min<10) ? "0#{d.min}" : d.min.to_s
-      hour = (d.hour>12) ? d.hour-12 : d.hour
-      hour = 12 if hour == 0
-      hour = (hour<10) ? "0#{hour}" : hour.to_s
-      m = d.strftime("%p").downcase
-      return "#{hour}:#{min}#{m}"
-  end
-  
-  # Bin sensor data to closest 30 minutes. The first data point is thrown away,
-  # as the temps contribute to the first 30 min bin.
-  # 
-  def descretize_sensor_data(sensors)
-    labels = get_full_day_labels()
-    bins = Array.new(labels.length) {|i| {:label=>labels[i],:temp=>0.0,:count=>0} }
-    return bins if sensors.empty?
-    # process sensor data
-    sensors.each do |s|
-      key = date_to_bin(s.created_at)
-      # locate record
-      record = bins.find {|r| r[:label]==key}
-      raise "could not locate label for key #{key}, this should not happen!" if record.nil?
-      record[:temp] += s.temp
-      record[:count] += 1
-    end    
-    return bins
-  end
+
   
   #
   # graph of sensor data
@@ -399,6 +371,8 @@ module ExperimentsHelper
     base << "chds=#{min},#{max}&"
     # axis labels
     base << "chxl=0:|#{time_labels.join('|')}&"
+    # length of ticks
+    base << "chxtc=0,10&"
     # axis label positions
     #base << "chxp=0,#{display_time_labels.join(',')}&"
     # data legend
@@ -472,7 +446,53 @@ module ExperimentsHelper
     excel_quartile(array, 2)
   end  
   
+  # hour bins
+  def date_to_bin(date)  
+      diff = (date.min>30) ? 60-date.min : 30-date.min
+      d = date + diff.minutes
+      min = (d.min<10) ? "0#{d.min}" : d.min.to_s
+      hour = (d.hour>12) ? d.hour-12 : d.hour
+      hour = 12 if hour == 0
+      hour = (hour<10) ? "0#{hour}" : hour.to_s
+      m = d.strftime("%p").downcase
+      return "#{hour}:#{min}#{m}"
+  end
   
+  # Bin sensor data to closest 30 minutes. The first data point is thrown away,
+  # as the temps contribute to the first 30 min bin.
+  # 
+  def descretize_sensor_data(sensors)
+    labels = get_full_day_labels()
+    bins = Array.new(labels.length) {|i| {:label=>labels[i],:temp=>0.0,:count=>0} }
+    return bins if sensors.empty?
+    # process sensor data
+    sensors.each do |s|
+      key = date_to_bin(s.created_at)
+      # locate record
+      record = bins.find {|r| r[:label]==key}
+      raise "could not locate label for key #{key}, this should not happen!" if record.nil?
+      record[:temp] += s.temp
+      record[:count] += 1
+    end    
+    return bins
+  end
+  
+  # we are usign whole dates (days) as keys
+  # returns bins[date][sensors]
+  def descretize_sensor_data_by_day(sensors, days)
+    bins = {}
+    return bins if sensors.empty?    
+    days.times do |i| 
+      key = (Date.today - i).to_date
+      bins[key] = []
+    end    
+    sensors.each do |s|
+      key = s.created_at.to_date
+      raise "Could not locate bin for day #{key}, this should not happen" if bins[key].nil?
+      bins[key] << s
+    end
+    return bins
+  end
   
   
   #
@@ -485,29 +505,34 @@ module ExperimentsHelper
     temp_union = []
     datasets = {}
     # process sensor data (if provided)
-    if false
-      # TODO: group by day, then by time
-    
+    if !sensors.empty?
+      # process sensors for each station
       sensors.keys.each do |station|
-        bins = descretize_sensor_data(sensors[station])
+        # group into days
+        days = descretize_sensor_data_by_day(sensors[station], 4)
+        # order by keys (whole date in days)
+        day_keys = days.keys.sort
         datasets[station] = []
-        bins.each do |record| 
-          if record[:count] > 0
-            t = record[:temp] / record[:count].to_f
-            temp_union << t
-            datasets[station] << t
-          else 
-            datasets[station] << '_'
-          end
+        # process days
+        day_keys.each do |day_key|
+          puts "DAY: #{day_key}"
+          # squash into hours
+          bins = descretize_sensor_data(days[day_key])          
+          bins.each do |record| 
+            if record[:count] > 0
+              t = record[:temp] / record[:count].to_f
+              temp_union << t
+              datasets[station] << t.round(3)
+            else 
+              datasets[station] << '_'
+            end
+          end          
         end
       end
     end  
     # sort by full date
     keys = bom.keys
-    keys.sort!{|x,y| bom[x][0][2].to_i<=>bom[y][0][2].to_i}      
-    # bom
-    datasets["BOM"] = []
-    
+    keys.sort!{|x,y| bom[x][0][2].to_i<=>bom[y][0][2].to_i}          
     # create temp arrays and a union of all temps
     temps = {}
     bom.keys.each do |key|
@@ -531,11 +556,12 @@ module ExperimentsHelper
     # block out today
     (48-temps[keys.last].length).times { temps[keys.last] << "_" }
     # labels (really rough, may not be accurate)
-    time_labels = ["12:00am", "12:00pm", "12:00am", "12:00pm", "12:00am", "12:00pm", "12:00am", "12:00pm"]
+    time_labels = multi_day_labels(4)
     num_series = datasets.keys.length
     
     #build master BOM list
-    keys.each { |key| datasets["BOM"] << temps[key] }
+    #datasets["BOM"] = []
+    #keys.each { |key| datasets["BOM"] << temps[key] }
     
     base = "http://chart.apis.google.com/chart?"
     # graph size
@@ -554,6 +580,8 @@ module ExperimentsHelper
     base << "chds=#{min},#{max}&"
     # axis labels
     base << "chxl=0:|#{time_labels.join('|')}&"
+    # length of ticks
+    base << "chxtc=0,10&"
     # data legend
     base << "chdl=#{datasets.keys.join('|')}&"
     # data
@@ -565,4 +593,16 @@ module ExperimentsHelper
         
     return base  
   end
+  
+  # labels for multiple day graph (midnight to midnight)
+  def multi_day_labels(num_days)
+    labels = []
+    num_days.times do |i|
+      labels << "12:00am"
+      labels << "12:00pm"
+    end
+    labels << "12:00am"
+    return labels
+  end
+  
 end
