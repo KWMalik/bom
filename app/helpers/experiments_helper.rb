@@ -522,7 +522,8 @@ module ExperimentsHelper
             if record[:count] > 0
               t = record[:temp] / record[:count].to_f
               temp_union << t
-              datasets[station] << t.round(3)
+              # dear future self: i had to reduce the amount of data being sent, hence the rounding
+              datasets[station] << t.round(1)
             else 
               datasets[station] << '_'
             end
@@ -541,7 +542,7 @@ module ExperimentsHelper
         if v[0].nil?
           temps[key] << '_'
         else
-          temps[key] << v[0].to_f
+          temps[key] << v[0].to_f.round(1)
           temp_union << v[0].to_f
         end
 
@@ -557,11 +558,13 @@ module ExperimentsHelper
     (48-temps[keys.last].length).times { temps[keys.last] << "_" }
     # labels (really rough, may not be accurate)
     time_labels = multi_day_labels(4)
-    num_series = datasets.keys.length
+    
     
     #build master BOM list
-    #datasets["BOM"] = []
-    #keys.each { |key| datasets["BOM"] << temps[key] }
+    datasets["BOM"] = []
+    keys.each { |key| datasets["BOM"] << temps[key] }
+    
+    num_series = datasets.keys.length
     
     base = "http://chart.apis.google.com/chart?"
     # graph size
@@ -569,7 +572,8 @@ module ExperimentsHelper
     # series colors
     base << "chco=#{html_colors(num_series).join(',')}&"
     # graph title
-    base << "chtt=Sensor Temperatures: #{name}&"
+    #base << "chtt=Sensor Temperatures: #{name}&"
+    base << "chtt=#{name}&"
     # graph type
     base << "cht=lc&"
     # visible axes
@@ -587,12 +591,11 @@ module ExperimentsHelper
     # data
     serieses = []
     datasets.keys.each {|key| serieses << datasets[key].join(',') }
-    base << "chd=t:#{serieses.join('|')}"
-
-    return base     
-        
+    base << "chd=t:#{serieses.join('|')}"        
     return base  
   end
+  
+  
   
   # labels for multiple day graph (midnight to midnight)
   def multi_day_labels(num_days)
