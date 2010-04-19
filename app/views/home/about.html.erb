@@ -1,0 +1,38 @@
+<% content_for(:title) { "test" } %>
+<div class="subtitle">About</div>
+
+<p>
+The <strong>Office Temperature Project</strong> is an experiment in observing and 
+reporting on local temperature, such as the temperature that may be observed within an 
+office building.
+</p>
+
+<p>
+Two objectives of this project are:
+<ol>  
+  <li>To observe local temperature using multiple sensors within an office building.</li>
+  <li>To usefully present locally collected temperature information, 
+  such as in conjunction with official observations by the Australian Bureau of Meteorology.</li>
+</ol>
+</p>
+
+<p>
+The presentation of temperature observations is inspired by similar public efforts,such as: 
+the <%= link_to "Melbourne Water Water Usage Interactive Graph", "http://www.melbournewater.com.au/content/water_storages/water_report/zoom_graph.asp" %>,
+the <%= link_to "Melbourne University City Air Temperature Graph", "http://www.earthsci.unimelb.edu.au/~awatkins/melbtemp.html" %>,
+and the
+<%= link_to "BoM's Weather Graphs for Melbourne", "http://www.bom.gov.au/jsp/watl/weather/obs.jsp?graph=all_obs&station=86071" %>.
+</p>
+
+<p>
+This effort is currently undertaken by 
+<%= mail_to "A.Donaldson@bom.gov.au", "Andrew Donaldson" %> and 
+<%= mail_to "J.Brownlee@bom.gov.au", "Jason Brownlee" %> as a spare time project.
+</p>
+
+<p>
+The source code for this project is open source and available from: 
+<%= link_to "http://github.com/jbrownlee/bom", "http://github.com/jbrownlee/bom" %>
+</p>
+
+
