@@ -12,6 +12,9 @@ ActionController::Routing::Routes.draw do |map|
   
   map.about "about", :controller=>"home", :action=>"about"
   
+  map.official "official", :controller=>"observations", :action=>"official"
+  map.local "local", :controller=>"observations", :action=>"local"
+  
 
   # The priority is based upon order of creation: first created -> highest priority.
 

@@ -11,7 +11,10 @@
 Review official temperature information from the Australian Bureau of Meteorology.
 </p>
 <p>
-Capital Cities: Coming soon...
+Capital Cities: 
+<% @stations.each do |station| %> 
+  <%= link_to station.name, official_path(:station_id=>station.id) -%> |
+<%end%>
 </p>
 
 <div class="subsubtitle">Local Observations</div>
