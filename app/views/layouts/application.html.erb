@@ -8,18 +8,19 @@
   <meta http-equiv="Content-Script-Type" content="text/javascript"/>
   <meta http-equiv="Content-Style-Type" content="text/css"/>
   <%= yield :metadata %>
-  <title><%= yield(:title) || "BOM Experiments" %></title>
+  <title><%= yield(:title) || site_name %></title>
   <%= stylesheet_link_tag 'scaffold' %>
   <%= yield :stylesheet %> 
   <%= yield :script %> 
 </head>
 <body <%= yield :body_tag %>>
 	<div class="head">
-		<div class="title">BOM Experiments</div>	
-		<div class="menu"><%= link_to "Home", root_path %></div>
-		<hr />		
+		<div class="title"><%= site_name %></div>	
+		<div class="menu">
+		  <%= link_to "Home", root_path %> |
+		  <%= link_to "About", about_path %>
+		</div>
 	</div>
-	<div class="time"><%= Time.now %> [<%= Time.zone %>]</div>
 	<div class="flash">
 		<%= flash[:notice] %>
 	</div>
@@ -29,7 +30,6 @@
 		</div>
 	</div>
 	<div class="footer">
-
 	</div>
 </body>
 </html>

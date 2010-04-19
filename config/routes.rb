@@ -8,6 +8,10 @@ ActionController::Routing::Routes.draw do |map|
   map.experiment4 'experiment4', :controller=>"experiments", :action=>"temp4"
   map.experiment5 'experiment5', :controller=>"experiments", :action=>"temp5"
   map.experiment6 'experiment6', :controller=>"experiments", :action=>"temp6"
+  
+  
+  map.about "about", :controller=>"home", :action=>"about"
+  
 
   # The priority is based upon order of creation: first created -> highest priority.
 

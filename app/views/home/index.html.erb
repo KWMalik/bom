@@ -1,16 +1,30 @@
-<div class="subtitle">Welcome to BOM experiments</div>
+<div class="subtitle">Welcome</div>
 
 <p>
-  Here you will find all kinds of experiments with public data from the Australian Bureau of Meteorology.
-  The objective of this project is to provide a useful presentation of weather information (such as temperature) combined with local and context specific data (such as local temperature sensors).
-</p>
-<p>
-  The sourcecode for this application is located online at: 
-  <%= link_to "http://github.com/jbrownlee/bom", "http://github.com/jbrownlee/bom" %>
+  Welcome to the <strong>Office Temperature Project</strong>, the objectives of which are 
+  to observe and present local temperature information, such as within an office building.
+  (<%= link_to "learn more", about_path %>...)
 </p>
 
+<div class="subsubtitle">Official Observations</div>
 <p>
-<strong>Experiments</strong>
+Review official temperature information from the Australian Bureau of Meteorology.
+</p>
+<p>
+Capital Cities: Coming soon...
+</p>
+
+<div class="subsubtitle">Local Observations</div>
+<p>
+Review local temperature information observed within your office.
+</p>
+<p>
+Offices: Coming soon...
+</p>
+
+
+<div class="subsubtitle">Experiments (soon to be deleted...)</div>
+<p>
 <ul>
   <li>
     <%= link_to "Experiment #1", experiment1_path %>: A graph of today's temperature...works.
@@ -33,30 +47,3 @@
 </ul>
 </p>
 
-<p>
-<strong>References</strong>
-<ul>
-  <li>
-    <%= link_to "Melbourne Water: Water Usage", "http://www.melbournewater.com.au/content/water_storages/water_report/zoom_graph.asp" %> (Interactive Graph)
-  </li>
-  <li>
-    <%= link_to "Melbourne University: Melbourne City Air Temperature", "http://www.earthsci.unimelb.edu.au/~awatkins/melbtemp.html" %>
-  </li>
-  <li>
-    <%= link_to "BOM: Latest Weather Graphs for Melbourne", "http://www.bom.gov.au/jsp/watl/weather/obs.jsp?graph=all_obs&station=86071" %>
-  </li>  
-  <li>
-    <%= link_to "BOM: Latest Weather Observations for Melbourne", "http://www.bom.gov.au/products/IDV60801/IDV60801.94868.shtml" %> (with json data)
-  </li>
-</ul>
-</p>
-
-<p>
-<strong>TODOs</strong>
-<ul>
-  <li>Consider playing with flash graphs (i've used  <%= link_to "openflashchart", "http://teethgrinder.co.uk/open-flash-chart/" %> before).</li>
-  <li>Deploy to world-facing location (perhaps <%= link_to "Heroku", "http://www.heroku.com" %>)</li>
-  <li>Start designing (reception point + data model + infrastructure) for local temp sensor logging</li>
-  <li>Better data management: site entity, site had obs, site has name, calibration, closest weather station, etc</li>
-</ul>
-</p>
