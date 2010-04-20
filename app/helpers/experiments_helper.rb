@@ -515,7 +515,6 @@ module ExperimentsHelper
         datasets[station] = []
         # process days
         day_keys.each do |day_key|
-          puts "DAY: #{day_key}"
           # squash into hours
           bins = descretize_sensor_data(days[day_key])          
           bins.each do |record| 

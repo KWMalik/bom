@@ -9,13 +9,28 @@ class ObservationsController < ApplicationController
     # load bom data
     @bom = Bom.new
     @bom.load_temperatures(@station.url, @station.name)
-    # build graph
+    # build graph data
     @graph = Graph.new
     @graph.add_dataset(@bom.dataset)
   end
   
   def local
-  
+    # default to melbourne
+    params[:station_id] = default_station if params[:station_id].nil?
+    @station = Station.find(:first, :conditions=>['id=?', params[:station_id]])
+    @stations = Station.find(:all, :order=>"name")       
+    
+    # local data
+    @office = "Australian Bureau of Meteorology"
+    @local = Local.new
+    @local.load_last_4_days_dataset     
+    # load bom data
+    @bom = Bom.new
+    @bom.load_temperatures(@station.url, @station.name)
+    # build graph data
+    @graph = Graph.new
+    @graph.add_dataset(@bom.dataset)  
+    @graph.add_dataset(@local.dataset)
   end
   
   

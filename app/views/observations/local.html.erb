@@ -1,18 +1,15 @@
-<div class="subtitle">Official Observations</div>
+<div class="subtitle">Local Observations</div>
 
 <table width="100%">
   <tr>
     <td>
-      <% form_tag official_path, :method => 'get' do %>
-          Capital: <%= select_tag(:station_id, options_from_collection_for_select(@stations, :id, :name, params[:station_id].to_i)) %>
-          <%= submit_tag "change", :name => nil %>
-      <% end %>
+    Office: <%= @office %>
     </td>    
     <td class="current_temp">
       <span><%=degrees @bom.get_last_temp %></span>
     </td>
   </tr>
-</table>  
+</table>
 
 
 
@@ -33,15 +30,6 @@
   </p>
   <p>
     <%= render :partial=>"summary", :locals => {:dataset=>@graph.get_recent_day_contiguous_summary} %>
-  </p>
-
-  <br />
-
-  <p>
-    <img src="<%= @graph.get_recent_days_graph("#{@bom.name} Temperature: Recent Days - By Day") -%>" />
-  </p>
-  <p>
-    <%= render :partial=>"summary", :locals => {:dataset=>@graph.get_recent_days_summary} %>
-  </p>
+  </p>  
 </div>  
 

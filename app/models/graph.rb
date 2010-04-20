@@ -5,6 +5,66 @@ class Graph
 
   def initialize 
     @dataset = {}
+    @counter = 1
+  end
+  
+  # a summary of todays temperature
+  def get_today_summary
+    summary = {}
+    # all datasets for today
+    datasets = get_today_datasets
+    return summary if datasets.keys.empty?
+    datasets.keys.each do |set|
+      summary[set] = make_summary_row(datasets[set])
+    end
+    return summary    
+  end
+  
+  # a summary of recent days temperature, by day
+  def get_recent_days_summary
+    summary = {}
+    # process datasets
+    @dataset.keys.each do |station|
+      @dataset[station].keys.each do |date|
+        key = date.strftime("%d/%m/%Y")
+        raise "date conflict in datasets for #{date}" if !summary[key].nil?
+        summary[key] = make_summary_row(@dataset[station][date])
+      end
+    end    
+    return summary
+  end
+  
+  # a summary of recent days temperature, contiguous by station
+  def get_recent_day_contiguous_summary
+    summary = {}
+    # assume 4 days for now
+    num_days = 4
+    # process datasets
+    @dataset.keys.each do |station|
+      next if @dataset[station].keys.length != num_days
+      master = []
+      ordered_dates = @dataset[station].keys.sort
+      ordered_dates.each do |date|
+        master += @dataset[station][date]
+      end
+      summary[station] = make_summary_row(master)
+    end    
+    return summary
+  end
+  
+  # make a summary of a given dataset [][label, count, temp]
+  def make_summary_row(dataset)
+    summary = {}
+    temps = []
+    dataset.each {|rec| temps << rec[:temp] if rec[:count]>0 }
+    summary[:total] = dataset.inject(0){|sum, rec| sum+rec[:count]}
+    summary[:min] = temps.min
+    summary[:max] = temps.max
+    summary[:mean] = temps.sum/temps.length.to_f
+    first = dataset.find {|rec| rec[:count]>0}
+    last = dataset.reverse.find {|rec| rec[:count]>0}
+    summary[:last_temp] = last[:temp]
+    return summary
   end
 
   # data[key][date][label, count, temp]
@@ -86,21 +146,52 @@ class Graph
     return make_multi_series_graph(temps, get_time_labels_one_day_graph, min, max, title)
   end  
   
+  # contiguous graph over recent days
+  # assumes all days are there for all datasets
+  def get_recent_days_contiguous_graph(title)
+    return "" if @dataset.keys.length == 0
+    # temperature datasets for graphing
+    temps = {}
+    # union of temps for bounds 
+    union = []  
+    # assume last 4 days for now
+    num_days = 4
+    @dataset.keys.each do |station|
+      next if @dataset[station].keys.length != num_days
+      ordered_dates = @dataset[station].keys.sort
+      temps[station] = []
+      ordered_dates.each do |date|
+        @dataset[station][date].each do |record|
+          if record[:count] > 0 
+            temps[station] << record[:temp].round(1)
+            union << record[:temp]
+          else
+            temps[station] << "_"
+          end
+        end        
+      end
+    end
+    # bounds
+    min, max = union.min, union.max    
+    # make the graph
+    return make_multi_series_graph(temps, multi_day_labels(num_days), min, max, title)
+  end
+  
   # make a multi-series graph
   # expect data to be complete in [key][temps] format
   def make_multi_series_graph(datasets, xlabels, min_temp, max_temp, title)
     ordered_series = datasets.keys.sort
     base = ""
     # url
-    base << "http://chart.apis.google.com/chart?"
+    base << next_chart_url
+    # graph type
+    base << "cht=lc&"    
     # graph size
     base << "chs=600x240&"
     # series colors
     base << "chco=#{html_colors(datasets.keys.length).join(',')}&"
     # graph title
     base << "chtt=#{title}&"
-    # graph type
-    base << "cht=lc&"
     # visible axes
     base << "chxt=x,y&"
     # axis ranges    
@@ -119,6 +210,17 @@ class Graph
     base << "chd=t:#{serieses.join('|')}"
     return base
   end
+  
+  # for drawing multiple charts from this graph object
+  # avoid all using http://chart.apis.google.com/chart?
+  def next_chart_url
+    # does not work for now!?!?!
+    return "http://chart.apis.google.com/chart?"
+    #url = "http://#{@counter}.chart.apis.google.com/chart?"
+    #@counter += 1
+    #@counter = 0 if @counter > 9
+    #return url
+  end
 
   # labels for 24 hours
   def self.times_full_day
@@ -136,6 +238,17 @@ class Graph
   # time labels suitable for a one day graph
   def get_time_labels_one_day_graph
     return ["12:00am", "03:00am", "06:00am", "09:00am", "12:00pm", "03:00pm", "06:00pm", "09:00pm", "12:00am"]
+  end  
+  
+  # labels for multiple day graph (midnight to midnight)
+  def multi_day_labels(num_days)
+    labels = []
+    num_days.times do |i|
+      labels << "12:00am"
+      labels << "12:00pm"
+    end
+    labels << "12:00am"
+    return labels
   end  
   
   # get a list of html colors for graph serieses

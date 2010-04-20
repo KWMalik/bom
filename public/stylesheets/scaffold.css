@@ -73,7 +73,7 @@ div.menu {
 }
 div.title {
 	font-weight: bold;
-	font-size: 350%;
+	font-size: 400%;
 	padding: 20px;
 }
 div.body {
@@ -86,20 +86,49 @@ div.subtitle {
 	color: #333;
 	font-weight: bold;
 	font-size: 150%;
-	font-variant: small-caps;
 }
 
 div.subsubtitle {
-  padding-top: 15px;
+  margin-top: 50px;
 	color: #333;
 	font-size: 120%;
   border-bottom-style: solid;
   border-bottom-width: 1px;
   border-bottom-color: #aaa;
-  font-variant: small-caps;
+  font-weight: bold;
 }
 
 div.time {
   text-align: right;
   size: 50%;
+}
+
+table.summary {
+  margin-top: 30px;
+  width: 600px;
+  border-bottom-style: solid;
+  border-bottom-width: 1px;
+  border-bottom-color: #ccc;
+  border-top-style: solid;
+  border-top-width: 1px;
+  border-top-color: #ccc;
+  
+  margin-left: auto;
+  margin-right: auto;  
+}
+
+.datasummary {
+  margin-left: auto;
+  margin-right: auto;
+  text-align: center;
+}
+
+td.current_temp {
+  width: 50px;
+  vertical-align: center; 
+  text-align: center;
+  color: #999;
+  background: #fff;
+  font-size: 350%; 
+  font-weight: bold;
 }

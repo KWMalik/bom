@@ -19,7 +19,9 @@
 		<div class="title"><%= site_name %></div>	
 		<div class="menu">
 		  <%= link_to "Home", root_path %> |
-		  <%= link_to "About", about_path %>
+		  <%= link_to "About", about_path %> |
+		  <%= link_to "Official Temperature", official_path %> |
+		  <%= link_to "Local Temperature", local_path %>
 		</div>
 	</div>
 	<div class="flash">
@@ -28,6 +30,7 @@
 	<div class="body">
 		<div class="content">
 			<%= yield %>
+			<br /><br /><br /><br />
 		</div>
 	</div>
 	<div class="footer">

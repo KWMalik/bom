@@ -1,0 +1,30 @@
+<%
+  # Parameters: dataset, latest = nil
+
+  latest = false if local_assigns[:latest].nil? 
+%>
+
+<table class="summary">
+  <tr align="left">
+    <th></th>
+    <th>#Obs</th>
+    <th>Avg</th>
+    <th>Min</th>
+    <th>Max</th>
+    <% if latest %>
+      <th>Latest</th>
+    <% end %>
+  </tr>
+<% dataset.keys.sort.each do |station| %>
+  <tr align="left">
+    <td><%= station %></td>
+    <td><%= dataset[station][:total] %></td>
+    <td><%=degrees dataset[station][:mean] %></td>
+    <td><%=degrees dataset[station][:min] %></td>
+    <td><%=degrees dataset[station][:max] %></td>
+    <% if latest %>
+      <td><%=degrees dataset[station][:last_temp] %></td>
+    <% end %>    
+  </tr>
+<% end %>  
+</table>

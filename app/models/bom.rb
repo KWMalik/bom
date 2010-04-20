@@ -24,6 +24,7 @@ class Bom
     return nil
   end
 
+  # entry point for getting the JSON and parsing it into something useful
   def load_temperatures(url, name)
     @name = name
     @url = url
@@ -62,8 +63,10 @@ class Bom
         # locate record
         time_key = bom_record[1].split('/')[1]
         record = @dataset[@name][date].find {|r| r[:label]==time_key}
-        #raise "could not locate label for key #{time_key}, this should not happen!" if record.nil?
+        # can have strange times (rare)
         next if record.nil?
+        # can be nil in the JSON
+        next if bom_record[0].nil? 
         record[:count] = 1
         record[:temp] = bom_record[0].to_f
       end

@@ -22,7 +22,10 @@ Capital Cities:
 Review local temperature information observed within your office.
 </p>
 <p>
-Offices: Coming soon...
+Offices: 
+<% @offices.each do |office| %> 
+  <%= link_to office, local_path -%> 
+<%end%>
 </p>
 
 

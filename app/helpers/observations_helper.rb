@@ -1,7 +1,7 @@
 module ObservationsHelper
 
   def degrees(text)
-    return "#{text}&deg;C"
+    return "#{text.to_f.round(1)}&deg;C"
   end
 
 end
