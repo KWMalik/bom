@@ -56,7 +56,11 @@ a:hover { color: #fff; background-color:#000; }
   list-style: square;
 }
 
-div.flash { color: green; }
+div.flash { 
+color: red; 
+font-size: 15px;
+font-weight: bold;
+}
 
 div.all {
 

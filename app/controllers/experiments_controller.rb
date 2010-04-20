@@ -7,27 +7,16 @@ class ExperimentsController < ApplicationController
   
   # display today's temp as a graph
   def temp1
-    # default to melbourne
-    params[:station_id] = default_station if params[:station_id].nil?
-    @station = Station.find(:first, :conditions=>['id=?', params[:station_id]])
-    @stations = Station.find(:all, :order=>"name")        
-    
-    doc = download_and_parse_json(@station.url)
-    @temp_data = get_today_data(doc)
-    @summary = summary_for_day_temp_data(@temp_data)
+    flash[:notice] = 'Sorry, the requested experiment has ended.'
+    redirect_to(root_url)
   end
   
 
   
   # recent days  
   def temp2
-    # default to melbourne
-    params[:station_id] = default_station if params[:station_id].nil?
-    @station = Station.find(:first, :conditions=>['id=?', params[:station_id]])
-    @stations = Station.find(:all, :order=>"name")  
-  
-    doc = download_and_parse_json(@station.url)
-    @temp_data = get_all_data_by_day(doc)
+    flash[:notice] = 'Sorry, the requested experiment has ended.'
+    redirect_to(root_url)
   end
   
   # reception point for local sensor data
@@ -45,20 +34,8 @@ class ExperimentsController < ApplicationController
   
   # graph local sensor data
   def temp4    
-    # default to melbourne
-    params[:station_id] = default_station if params[:station_id].nil?
-    @station = Station.find(:first, :conditions=>['id=?', params[:station_id]])
-    @stations = Station.find(:all, :order=>"name")   
-  
-    #load sensor data
-    @results_today = get_all_local_sensors_by_date(Date.today, Date.today+1)
-    @summary_today = calculate_sensor_summary(@results_today)
-    @results_recent = get_all_local_sensors_by_date(Date.today-3, Date.today+1)
-    @summary_recent = calculate_sensor_summary(@results_recent)
-    # load bom data
-    doc = download_and_parse_json(@station.url)
-    @bom_today = get_today_data(doc)
-    @bom_recent = get_all_data_by_day(doc)    
+    flash[:notice] = 'Sorry, the requested experiment has ended.'
+    redirect_to(root_url)  
   end
   
   # summarize local stations
