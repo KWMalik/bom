@@ -127,10 +127,14 @@ table.summary {
   text-align: center;
 }
 
-td.current_temp {
+td.current_temp_td {
   width: 50px;
   vertical-align: center; 
   text-align: center;
+  color: #999;
+}
+
+span.current_temp {
   color: #999;
   background: #fff;
   font-size: 350%; 

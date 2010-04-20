@@ -2,14 +2,18 @@
 
 <table width="100%">
   <tr>
-    <td>
+    <td valign="top">
       <% form_tag official_path, :method => 'get' do %>
           Capital: <%= select_tag(:station_id, options_from_collection_for_select(@stations, :id, :name, params[:station_id].to_i)) %>
           <%= submit_tag "change", :name => nil %>
       <% end %>
     </td>    
-    <td class="current_temp">
-      <span><%=degrees @bom.get_last_temp %></span>
+    <td class="current_temp_td">
+      <span class="current_temp"><%=degrees @bom.get_last_temp %></span>
+      <br />
+      <p>
+      <small>In <%= @station.name %></small>
+      </p>
     </td>
   </tr>
 </table>  

@@ -23,14 +23,14 @@ class ObservationsController < ApplicationController
     # local data
     @office = "Australian Bureau of Meteorology"
     @local = Local.new
-    @local.load_last_4_days_dataset     
+    @local.load_last_4_days_dataset("Office")     
     # load bom data
     @bom = Bom.new
     @bom.load_temperatures(@station.url, @station.name)
     # build graph data
     @graph = Graph.new
     @graph.add_dataset(@bom.dataset)  
-    @graph.add_dataset(@local.dataset)
+    @graph.add_dataset(@local.avg_dataset)
   end
   
   

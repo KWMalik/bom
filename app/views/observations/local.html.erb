@@ -2,15 +2,19 @@
 
 <table width="100%">
   <tr>
-    <td>
+    <td valign="top">
     Office: <%= @office %>
-    </td>    
-    <td class="current_temp">
-      <span><%=degrees @bom.get_last_temp %></span>
-    </td>
+    </td>   
+     
+    <td class="current_temp_td">
+      <span class="current_temp"><%=degrees  @local.get_last_temp_avg %></span>
+      <br />
+      <p>
+      <small>In the office</small>
+      </p>
+    </td> 
   </tr>
 </table>
-
 
 
 <div class="subsubtitle">Today</div>

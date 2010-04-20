@@ -1,14 +1,59 @@
 class Local
 
-  attr_reader :resultset, :dataset
+  attr_reader :name, :resultset, :dataset, :avg_dataset
 
   # an entry point
   # return sensor data for the last 4 days in the standardized representation  
-  def load_last_4_days_dataset
+  def load_last_4_days_dataset(name)
+    @name = name
     # retrieve from database
     load_all_local_sensors_by_date(Date.today-3, Date.today+1)
     # standardize
     standardize
+    # calculate average for this office
+    average_for_office
+  end
+  
+  
+  def get_last_temp_avg
+    today = @avg_dataset[@name].keys.sort.last
+    raise "Do not have data for today #{today}" if today != Date.today
+    @avg_dataset[@name][today].reverse.each do |record|
+      return record[:temp] if record[:count] > 0
+    end
+  end
+  
+  def average_for_office
+    @avg_dataset = {}
+    @avg_dataset[@name] = {}
+    # collect
+    @dataset.keys.each do |station|
+      @dataset[station].keys.each do |date|
+        # create as needed
+        if @avg_dataset[@name][date].nil?
+          labels = Graph.times_full_day
+          @avg_dataset[@name][date] = Array.new(labels.length) {|i| {:label=>labels[i],:temp=>0.0,:count=>0,:sum=>0.0}}
+        end
+        # process records
+        @dataset[station][date].each do |record|
+          # update if data
+          if record[:count] > 0
+            # assume not sorted
+            match = @avg_dataset[@name][date].find {|r| r[:label]==record[:label]}
+            raise "could not locate label for key #{record[:label]}, this should not happen!" if match.nil?
+            match[:sum] += record[:temp]
+            match[:count] += 1
+          end
+        end
+      end
+    end
+    # average
+    @avg_dataset[@name].keys.each do |date|
+      @avg_dataset[@name][date].each do |rec|
+        rec[:temp] = ((rec[:count]>0) ? rec[:sum]/rec[:count] : 0.0)
+      end
+    end
+    puts @avg_dataset[@name].keys.length
   end
   
   
