@@ -9,7 +9,9 @@ class ObservationsController < ApplicationController
     # load bom data
     @bom = Bom.new
     @bom.load_temperatures(@station.url, @station.name)
-  
+    # build graph
+    @graph = Graph.new
+    @graph.add_dataset(@bom.dataset)
   end
   
   def local

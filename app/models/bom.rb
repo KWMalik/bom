@@ -51,7 +51,7 @@ class Bom
       date = bom_full_date_to_date(date_s)      
       @dataset[@name][date] = []
       Graph.times_full_day.each do |label|
-        @dataset[@name][date] << {:label=>label,:count=>0,:temp=>0}
+        @dataset[@name][date] << {:label=>label,:count=>0,:temp=>0.0}
       end
     end
     # process temps
@@ -62,9 +62,10 @@ class Bom
         # locate record
         time_key = bom_record[1].split('/')[1]
         record = @dataset[@name][date].find {|r| r[:label]==time_key}
-        raise "could not locate label for key #{time_key}, this should not happen!" if record.nil?
+        #raise "could not locate label for key #{time_key}, this should not happen!" if record.nil?
+        next if record.nil?
         record[:count] = 1
-        record[:count] = bom_record[0].to_f
+        record[:temp] = bom_record[0].to_f
       end
     end
   end

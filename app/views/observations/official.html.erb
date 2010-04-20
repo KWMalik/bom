@@ -1,7 +1,7 @@
 <div class="subtitle">Official Observations</div>
 
 <p>
-The current temperature in <%= @bom.name %> is <%= @bom.get_last_temp %>.
+The current temperature in <strong><%= @bom.name %></strong> is <%=degrees @bom.get_last_temp %>.
 <br />
 <% form_tag official_path, :method => 'get' do %>
     Station: <%= select_tag(:station_id, options_from_collection_for_select(@stations, :id, :name, params[:station_id].to_i)) %>
@@ -12,7 +12,11 @@ The current temperature in <%= @bom.name %> is <%= @bom.get_last_temp %>.
 
 
 <div class="subsubtitle">Today</div>
-
-
+<br />
+<img src="<%= @graph.get_today_graph("#{@bom.name} Temperature: Today") -%>" />
 
 <div class="subsubtitle">Recent days</div>
+<br />
+<img src="<%= @graph.get_recent_days_graph("#{@bom.name} Temperature: Recent Days") -%>" />
+
+
