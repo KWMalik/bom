@@ -52,6 +52,9 @@ class ObservationsController < ApplicationController
     @graph = Graph.new
     @graph.add_dataset(@bom.dataset)  
     @graph.add_dataset(@local.dataset)
+    
+    # all sites for this office
+    @sites = Sensor.find(:all, :group=>"name", :order=>"name")
   end  
   
   # site summary

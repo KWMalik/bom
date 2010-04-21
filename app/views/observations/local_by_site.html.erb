@@ -1,9 +1,9 @@
-<div class="subtitle">Local Observations by Site</div>
+<div class="subtitle">Office Observations by Site</div>
 
 <table width="100%">
   <tr>
     <td valign="top">
-      Office: <%= @office %>
+      <%= @office %>
       <br />
       <p>
       <%= link_to "Back to office temperature", local_path %>.
@@ -35,3 +35,14 @@
   </p>
 </div>  
 
+<br />
+
+<div class="subsubtitle">All Sites for Office</div>
+
+<p>
+There are <%= @sites.length %> temperature sites for this office, as follows:
+<br /> 
+<% @sites.each do |site| %>
+  <%= link_to site.name, site_path(:name=>site.name) %> |
+<% end %>
+</p>

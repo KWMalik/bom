@@ -11,20 +11,22 @@
     <th>Avg</th>
     <th>Min</th>
     <th>Max</th>
-    <% if latest %>
-      <th>Latest</th>
-    <% end %>
+    <th>
+    <% if latest %>Latest<% end %>
+    </th>
   </tr>
 <% dataset.keys.sort.each do |station| %>
   <tr align="left">
-    <td><%= station %></td>
+    <td><%= site_link(station) %></td>
     <td><%= dataset[station][:total] %></td>
     <td><%=degrees dataset[station][:mean] %></td>
     <td><%=degrees dataset[station][:min] %></td>
     <td><%=degrees dataset[station][:max] %></td>
+    <td>
     <% if latest %>
-      <td><%=degrees dataset[station][:last_temp] %></td>
+      <%=degrees dataset[station][:last_temp] %>
     <% end %>    
+    </td>
   </tr>
 <% end %>  
 </table>

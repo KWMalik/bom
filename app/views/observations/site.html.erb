@@ -11,14 +11,19 @@
       <%= link_to "Office Temperature by Site", localsites_path  %>
       </p>
     </td>       
-    <td>      
+    <td class="current_temp_td">
+      <span class="current_temp"><%=degrees  @local.get_last_temp(@local.name) %></span>
+      <br />
+      <p>
+      <small>In the office</small>
+      </p>
     </td> 
   </tr>
 </table>
 
 <div class="subsubtitle">Overview</div>
 <p>
-Some high level stats on this site
+TODO: Some high level stats on this site... 
 </p>
 
 <div class="subsubtitle">Today</div>

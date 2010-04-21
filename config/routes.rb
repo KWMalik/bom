@@ -1,7 +1,7 @@
 ActionController::Routing::Routes.draw do |map|
   map.resources :sensors
 
-
+  # defunct
   map.experiment1 'experiment1', :controller=>"experiments", :action=>"temp1"
   map.experiment2 'experiment2', :controller=>"experiments", :action=>"temp2"
   map.experiment3 'experiment3', :controller=>"experiments", :action=>"temp3"
@@ -10,12 +10,13 @@ ActionController::Routing::Routes.draw do |map|
   map.experiment6 'experiment6', :controller=>"experiments", :action=>"temp6"
   
   
-  map.about "about", :controller=>"home", :action=>"about"
+  map.about       "about", :controller=>"home", :action=>"about"
   
-  map.official "official", :controller=>"observations", :action=>"official"
-  map.local "local", :controller=>"observations", :action=>"local"
-  map.localsites "localsites", :controller=>"observations", :action=>"local_by_site"
-  map.site "site", :controller=>"observations", :action=>"site"
+  # the real deal
+  map.official    "temp/bom", :controller=>"observations", :action=>"official"
+  map.local       "temp/office", :controller=>"observations", :action=>"local"
+  map.localsites  "temp/office/sites", :controller=>"observations", :action=>"local_by_site"
+  map.site        "temp/office/site", :controller=>"observations", :action=>"site"
   
 
   # The priority is based upon order of creation: first created -> highest priority.

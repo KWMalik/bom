@@ -28,7 +28,7 @@ class Local
   
 
   
-  
+  # retrieve the lat average office temperature for today
   def get_last_temp_avg
     today = @avg_dataset[@name].keys.sort.last
     raise "Do not have data for today #{today}" if today != Date.today
@@ -36,6 +36,16 @@ class Local
       return record[:temp] if record[:count] > 0
     end
   end
+  
+  # retrieve the last temperature for a station for today
+  def get_last_temp(name)
+    today = @dataset[name].keys.sort.last
+    raise "Do not have data for today #{today}" if today != Date.today
+    @dataset[name][today].reverse.each do |record|
+      return record[:temp] if record[:count] > 0
+    end
+  end  
+  
   
   def average_for_office
     @avg_dataset = {}
