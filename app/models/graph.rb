@@ -35,10 +35,9 @@ class Graph
   end
   
   # a summary of recent days temperature, contiguous by station
-  def get_recent_day_contiguous_summary
+  # assumes 4 days because that what the bom provides
+  def get_recent_day_contiguous_summary(num_days=4)
     summary = {}
-    # assume 4 days for now
-    num_days = 4
     # process datasets
     @dataset.keys.each do |station|
       next if @dataset[station].keys.length != num_days
@@ -148,14 +147,13 @@ class Graph
   
   # contiguous graph over recent days
   # assumes all days are there for all datasets
-  def get_recent_days_contiguous_graph(title)
+  # assume 4 days for now, that is what the bom provides
+  def get_recent_days_contiguous_graph(title, num_days=4)
     return "" if @dataset.keys.length == 0
     # temperature datasets for graphing
     temps = {}
     # union of temps for bounds 
     union = []  
-    # assume last 4 days for now
-    num_days = 4
     @dataset.keys.each do |station|
       next if @dataset[station].keys.length != num_days
       ordered_dates = @dataset[station].keys.sort
@@ -175,6 +173,40 @@ class Graph
     min, max = union.min, union.max    
     # make the graph
     return make_multi_series_graph(temps, multi_day_labels(num_days), min, max, title)
+  end
+  
+  # boxplot of all days for a station
+  def get_recent_days_boxplot_graph(station, title)
+    data = {}
+    data[:min] = []
+    data[:max] = []
+    data[:q1] = []
+    data[:q3] = []
+    data[:med] = []
+    # process
+    ordered_days = @dataset[station].keys.sort
+    labels = []
+    union = []
+    ordered_days.each do |date|
+      # get temps
+      temps = []
+      @dataset[station][date].each {|r| temps << r[:temp] if r[:count]>0 }
+      # skip empty days, breaks the graph
+      next if temps.empty?
+      labels << date.strftime("%d/%m/%Y")
+      # add to union
+      union += temps
+      # stats
+      data[:min] << temps.min
+      data[:max] << temps.max
+      data[:q1] << excel_lower_quartile(temps)
+      data[:q3] << excel_upper_quartile(temps)
+      data[:med] << excel_middle_quartile(temps)
+    end
+    # bounds
+    min, max = union.min, union.max
+    # make the graph
+    return make_boxplot_graph(data, labels, min, max, title)
   end
   
   # make a multi-series graph
@@ -208,8 +240,63 @@ class Graph
     serieses = []
     ordered_series.each {|key| serieses << datasets[key].join(',') }
     base << "chd=t:#{serieses.join('|')}"
+    
+    puts "DEBUG: graph length = #{base.length}"
     return base
   end
+  
+  
+  # make a boxplot of the provided data
+  # in: data[min, max, q1, q3, med] where,
+  #   each ref has an array and each member across arrays is for the one series
+  def make_boxplot_graph(data, xlabels, min_temp, max_temp, title) 
+    num = data[data.keys.first].length
+    # inset data
+    data.keys.each do |k| 
+      data[k].unshift(-1)
+      data[k].push(-1)
+    end
+    # inset labels
+    xlabels.unshift("")
+    xlabels.push("")
+    # build url   
+    base = ""
+    # url
+    base << next_chart_url    
+    # graph size
+    base << "chs=600x240&"
+    # graph title
+    base << "chtt=#{title}&"
+    # graph type
+    base << "cht=lc&"
+    # visible axes
+    base << "chxt=x,y&"
+    # axis ranges    
+    base << "chxr=1,#{min_temp},#{max_temp},#{(max_temp-min_temp)/10.0}&"
+    # range for scaling data
+    base << "chds=#{min_temp},#{max_temp}&"
+    # axis labels
+    base << "chxl=0:|#{xlabels.join('|')}&"
+    # build series
+    serieses = []
+    serieses << data[:min].join(',')
+    serieses << data[:q1].join(',')
+    serieses << data[:q3].join(',')
+    serieses << data[:max].join(',')
+    serieses << data[:med].join(',')
+    base << "chd=t0:#{serieses.join('|')}&"    
+    # build display
+    display = []
+    display << "F,FF0000,0,1:#{num},40"
+    display << "H,FF0000,0,1:#{num},1:20"
+    display << "H,FF0000,3,1:#{num},1:20"
+    display << "H,000000,4,1:#{num},1:40"
+    base << "chm=#{display.join('|')}"
+
+    puts "DEBUG: graph length = #{base.length}"
+    return base
+  end
+  
   
   # for drawing multiple charts from this graph object
   # avoid all using http://chart.apis.google.com/chart?
@@ -258,4 +345,32 @@ class Graph
     return Array.new(total){|i| all_colors[i]}
   end  
 
+  
+  # IQR calculations for boxplots
+  # http://stackoverflow.com/questions/1744525/ruby-percentile-calculations-to-match-excel-formulas-need-refactor
+  def excel_quartile(array, quartile)
+    # Returns nil if array is empty and covers the case of array.length == 1
+    return array.first if array.length <= 1
+    sorted = array.sort
+    # The 4th quartile is always the last element in the sorted list.
+    return sorted.last if quartile == 4
+    # Source: http://mathworld.wolfram.com/Quartile.html
+    quartile_position = 0.25 * (quartile*sorted.length + 4 - quartile)
+    quartile_int = quartile_position.to_i
+    lower = sorted[quartile_int - 1]
+    upper = sorted[quartile_int]
+    lower + (upper - lower) * (quartile_position - quartile_int)
+  end
+
+  def excel_lower_quartile(array)
+    excel_quartile(array, 1)
+  end
+
+  def excel_upper_quartile(array)
+    excel_quartile(array, 3)
+  end
+  
+  def excel_middle_quartile(array)
+    excel_quartile(array, 2)
+  end 
 end

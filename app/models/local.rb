@@ -3,7 +3,7 @@ class Local
   attr_reader :name, :resultset, :dataset, :avg_dataset
 
   # an entry point
-  # return sensor data for the last 4 days in the standardized representation  
+  # load sensor data for the last 4 days in the standardized representation  
   def load_last_4_days_dataset(name)
     @name = name
     # retrieve from database
@@ -13,6 +13,20 @@ class Local
     # calculate average for this office
     average_for_office
   end
+  
+  
+  # an entry point
+  # return sensor data for a given site (sensor name) for the last 7 days
+  def load_last_7_days_dataset(name)
+    @name = name
+    # retrieve from database
+    load_local_sensors_by_name_last_week(@name)
+    # standardize
+    standardize
+  end  
+  
+  
+
   
   
   def get_last_temp_avg
@@ -65,7 +79,7 @@ class Local
     # process sensors for each station
     @resultset.keys.each do |station|
       # group into days: assume 4 days for now
-      days = descretize_sensor_data_by_day(@resultset[station], 4)
+      days = descretize_sensor_data_by_day(@resultset[station])
       @dataset[station] = {}      
       # process days
       days.keys.each do |date|
@@ -112,22 +126,19 @@ class Local
   # assume active record is using local time zone for date stuff (seems it does)
   # in: data[sensors...]
   # out data[date][sensors...]
-  def descretize_sensor_data_by_day(sensors, days)
-    bins = {}
-    return bins if sensors.empty?    
-    days.times do |i| 
-      key = (Date.today - i).to_date
-      bins[key] = []
-    end    
+  def descretize_sensor_data_by_day(sensors)
+    data = {}
     sensors.each do |s|
       key = s.created_at.to_date
-      raise "Could not locate bin for day #{key}, this should not happen" if bins[key].nil?
-      bins[key] << s
+      data[key] = [] if data[key].nil?      
+      data[key] << s
     end
-    return bins
+    return data
   end  
   
+  # load all sensor data for all sites between the specified dates
   # timezone set to melb, active record will do the magic for us i believe
+  # out: [name][sensors]
   def load_all_local_sensors_by_date(start_date, end_date)
     s_date = start_date.to_time.utc
     e_date = end_date.to_time.utc  
@@ -137,4 +148,14 @@ class Local
       @resultset[s.name] = Sensor.find(:all, :conditions=>["created_at between ? and ? AND name=?", s_date, e_date, s.name], :order=>"created_at");
     end
   end
+  
+  # load all sensor data by day for the last week for the given site name
+  # out: [name][sensors]
+  def load_local_sensors_by_name_last_week(name)
+    s_date = (Date.today-6).to_time.utc
+    e_date = (Date.today+1).to_time.utc  
+    @resultset = {}
+    @resultset[name] = Sensor.find(:all, :conditions=>["created_at between ? and ? AND name=?", s_date, e_date, name], :order=>"created_at");
+  end
+   
 end

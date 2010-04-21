@@ -1,4 +1,4 @@
-<div class="subtitle">Local Observations</div>
+<div class="subtitle">Local Observations by Site</div>
 
 <table width="100%">
   <tr>
@@ -6,16 +6,10 @@
       Office: <%= @office %>
       <br />
       <p>
-      <%= link_to "View office temperature by site", localsites_path  %>
+      <%= link_to "Back to office temperature", local_path %>.
       </p>
-    </td>   
-     
-    <td class="current_temp_td">
-      <span class="current_temp"><%=degrees  @local.get_last_temp_avg %></span>
-      <br />
-      <p>
-      <small>In the office</small>
-      </p>
+    </td>       
+    <td>      
     </td> 
   </tr>
 </table>
@@ -38,6 +32,6 @@
   </p>
   <p>
     <%= render :partial=>"summary", :locals => {:dataset=>@graph.get_recent_day_contiguous_summary} %>
-  </p>  
+  </p>
 </div>  
 

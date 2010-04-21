@@ -14,6 +14,8 @@ ActionController::Routing::Routes.draw do |map|
   
   map.official "official", :controller=>"observations", :action=>"official"
   map.local "local", :controller=>"observations", :action=>"local"
+  map.localsites "localsites", :controller=>"observations", :action=>"local_by_site"
+  map.site "site", :controller=>"observations", :action=>"site"
   
 
   # The priority is based upon order of creation: first created -> highest priority.
