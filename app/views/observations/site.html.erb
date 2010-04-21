@@ -1,0 +1,64 @@
+<div class="subtitle">Office Site: <%= @local.name %></div>
+
+<table width="100%">
+  <tr>
+    <td valign="top">
+      Office: <%= @office %> <br />
+      Site: <%= @local.name %> <br />
+      <br />
+      <p>
+      <%= link_to "Office Temperature", local_path %> | 
+      <%= link_to "Office Temperature by Site", localsites_path  %>
+      </p>
+    </td>       
+    <td>      
+    </td> 
+  </tr>
+</table>
+
+<div class="subsubtitle">Overview</div>
+<p>
+Some high level stats on this site
+</p>
+
+<div class="subsubtitle">Today</div>
+<div class="datasummary">  
+  <p>
+    <img src="<%= @graph.get_today_graph("#{@local.name} Temperature: Today") -%>" />
+  </p>
+  <p>
+    <%= render :partial=>"summary", :locals => {:dataset=>@graph.get_today_summary,:latest=>true} %>
+  </p>
+</div>
+
+<div class="subsubtitle">Last 7 Days</div>
+<div class="datasummary">
+  <p>
+    <img src="<%= @graph.get_recent_days_contiguous_graph("#{@local.name} Temperature: Recent Days - Contiguous", 7) -%>" />
+  </p>
+  <p>
+    <%= render :partial=>"summary", :locals => {:dataset=>@graph.get_recent_day_contiguous_summary(7) } %>
+  </p>
+
+  <br />
+  
+  <p>
+    <img src="<%= @graph.get_recent_days_boxplot_graph(@local.name, "#{@local.name} Temperature: Recent Days - By Day") -%>" />
+  </p>
+  <p>
+    <%= render :partial=>"summary", :locals => {:dataset=>@graph.get_recent_days_summary} %>
+  </p>  
+
+  <br />
+
+  <p>
+    <img src="<%= @graph.get_recent_days_graph("#{@local.name} Temperature: Recent Days - By Day") -%>" />
+  </p>
+
+  
+  
+</div> 
+
+
+
+
