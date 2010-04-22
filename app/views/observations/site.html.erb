@@ -3,11 +3,10 @@
 <table width="100%">
   <tr>
     <td valign="top">
-      <%= @office %> > Sites > <%= @local.name %> 
+      <%= link_to @office, local_path  %> > <%= link_to "Sites", localsites_path  %> > <%= link_to @local.name, site_path(:name=>@local.name) %>
       <br />
       <p>
-      <%= link_to "Office Temperature", local_path %> | 
-      <%= link_to "Office Temperature by Site", localsites_path  %>
+      <%= link_to "Back", localsites_path  %>
       </p>
     </td>       
     <td class="current_temp_td">
@@ -77,10 +76,12 @@
   <p>
     <img src="<%= @graph.get_recent_days_graph("#{@local.name} Temperature: Recent Days - By Day") -%>" />
   </p>
+</div>
 
-  
-  
-</div> 
+
+
+<br /><br /><br /><br />
+<%= link_to "Back", localsites_path  %>
 
 
 

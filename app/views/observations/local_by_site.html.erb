@@ -3,10 +3,10 @@
 <table width="100%">
   <tr>
     <td valign="top">
-      <%= @office %> > Sites
+      <%= link_to @office, local_path  %> > <%= link_to "Sites", localsites_path  %>
       <br />
       <p>
-      <%= link_to "Back to office temperature", local_path %>.
+      <%= link_to "Back", local_path %>
       </p>
     </td>       
     <td class="current_temp_td">
@@ -53,3 +53,7 @@ There are <%= @sites.length %> temperature sites for this office, as follows:
   <%= link_to site.name, site_path(:name=>site.name) %> |
 <% end %>
 </p>
+
+
+<br /><br /><br /><br />
+<%= link_to "Back", local_path %>

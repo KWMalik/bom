@@ -96,7 +96,7 @@ class Graph
   def get_recent_obs_graph(title)
     # all datasets for today
     datasets = get_today_datasets
-    return "" if datasets.keys.length == 0
+    return "" if datasets.keys.empty?
     # temperature datasets for graphing
     temps = {}
     labels = Array.new(10){|i| 10-i}
@@ -104,14 +104,14 @@ class Graph
     union = []    
     # process datasets
     datasets.keys.each do |key|   
-      #next if datasets[key].length != 10
+      next if datasets[key].length != 10
       temps[key] = []
       datasets[key].each do |record|      
         temps[key] << ((record[:count]>0) ? record[:temp].round(2) : '_')
         union << record[:temp] if record[:count] > 0
       end
     end
-    return "" if temps.keys.length == 0
+    return "" if temps.keys.empty?
     # bounds
     min, max = union.min, union.max
     # make the graph
@@ -177,7 +177,7 @@ class Graph
   # assume 4 days for now, that is what the bom provides
   def get_recent_days_contiguous_graph(title, num_days=4)
     # no data check
-    return "" if @dataset.keys.length == 0
+    return "" if @dataset.keys.empty?
     # temperature datasets for graphing
     temps = {}
     # union of temps for bounds 
@@ -204,7 +204,7 @@ class Graph
       end      
     end
     # no prep'ed data check
-    return "" if temps.keys.length == 0
+    return "" if temps.keys.empty? or union.empty?
     # bounds
     min, max = union.min, union.max    
     # make the graph
