@@ -3,17 +3,24 @@
 <table width="100%">
   <tr>
     <td valign="top">
-      <%= @office %>
+      <%= @office %> > Sites
       <br />
       <p>
       <%= link_to "Back to office temperature", local_path %>.
       </p>
     </td>       
-    <td>      
+    <td class="current_temp_td">
+      <span class="current_temp"><%=degrees  @local.get_last_temp_avg %></span>
+      <br />
+      <p>
+      In the office <br />
+      <small>
+      (avg last 30 mins)
+      </small>
+      </p>
     </td> 
   </tr>
 </table>
-
 
 <div class="subsubtitle">Today</div>
 <div class="datasummary">  

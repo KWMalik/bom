@@ -4,6 +4,11 @@ module ObservationsHelper
     return text if !(text.kind_of? Float)
     return "#{text.to_f.round(1)}&deg;C"
   end
+  
+  def degrees_full(text)
+    return text if !(text.kind_of? Float)
+    return "#{text.to_f}&deg;C"
+  end
 
   def site_link(name)
     # special case

@@ -1,6 +1,6 @@
 class Local
 
-  attr_reader :name, :resultset, :dataset, :avg_dataset
+  attr_reader :name, :resultset, :dataset, :avg_dataset, :recent_resultset, :recent_dataset
 
   # an entry point
   # load sensor data for the last 4 days in the standardized representation  
@@ -23,6 +23,10 @@ class Local
     load_local_sensors_by_name_last_week(@name)
     # standardize
     standardize
+    # calculate average for this office (to be consistent)
+    average_for_office    
+    # calculate the last ten minutes (for this site)
+    last_10_minutes
   end  
   
   
@@ -47,6 +51,25 @@ class Local
     end
   end  
   
+  
+  # the recent dataset
+  def last_10_minutes
+    @recent_dataset = {}
+    @recent_dataset[@name] = {}
+    @recent_dataset[@name][Date.today] = []
+    
+    # lazy, just re-query
+    time = Time.now - 10.minutes
+    @recent_resultset = Sensor.find(:all, :conditions=>['created_at > ?', time.utc], :order=>"created_at DESC", :limit=>10);
+    @recent_resultset.reverse!
+    @recent_resultset.each do |sensor|
+      record = {}
+      record[:label] = sensor.created_at.to_s
+      record[:temp] = sensor.temp
+      record[:count] = 1
+      @recent_dataset[@name][Date.today] << record
+    end
+  end
   
   def average_for_office
     @avg_dataset = {}
@@ -78,7 +101,6 @@ class Local
         rec[:temp] = ((rec[:count]>0) ? rec[:sum]/rec[:count] : 0.0)
       end
     end
-    puts @avg_dataset[@name].keys.length
   end
   
   

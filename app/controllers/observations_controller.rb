@@ -49,11 +49,11 @@ class ObservationsController < ApplicationController
     @local = Local.new
     @local.load_last_4_days_dataset("Office")     
     # load bom data
-    @bom = Bom.new
-    @bom.load_temperatures(@station.url, @station.name)
+    #@bom = Bom.new
+    #@bom.load_temperatures(@station.url, @station.name)
     # build graph data
     @graph = Graph.new
-    @graph.add_dataset(@bom.dataset)  
+    #@graph.add_dataset(@bom.dataset)  
     @graph.add_dataset(@local.dataset)
     
     # all sites for this office
@@ -74,8 +74,10 @@ class ObservationsController < ApplicationController
     @local.load_last_7_days_dataset(name)
     # build graph data
     @graph = Graph.new
-    #@graph.add_dataset(@bom.dataset)  
-    @graph.add_dataset(@local.dataset)    
+    @graph.add_dataset(@local.dataset)
+    # recent
+    @recent_graph = Graph.new
+    @recent_graph.add_dataset(@local.recent_dataset) 
   end
 
 

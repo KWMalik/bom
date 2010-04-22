@@ -7,6 +7,7 @@ class Graph
     @dataset = {}
     @counter = 1
   end
+   
   
   # a summary of todays temperature
   def get_today_summary
@@ -40,12 +41,8 @@ class Graph
     summary = {}
     # process datasets
     @dataset.keys.each do |station|
-      next if @dataset[station].keys.length != num_days
       master = []
-      ordered_dates = @dataset[station].keys.sort
-      ordered_dates.each do |date|
-        master += @dataset[station][date]
-      end
+      @dataset[station].keys.each {|date| master += @dataset[station][date]}
       summary[station] = make_summary_row(master)
     end    
     return summary
@@ -59,10 +56,10 @@ class Graph
     summary[:total] = dataset.inject(0){|sum, rec| sum+rec[:count]}
     summary[:min] = temps.min
     summary[:max] = temps.max
-    summary[:mean] = temps.sum/temps.length.to_f
-    first = dataset.find {|rec| rec[:count]>0}
-    last = dataset.reverse.find {|rec| rec[:count]>0}
-    summary[:last_temp] = last[:temp]
+    summary[:mean] = temps.sum/temps.length.to_f if temps.length>0
+    first = (temps.length>0) ? dataset.find {|rec| rec[:count]>0} : 'n/a'
+    last = (temps.length>0) ? dataset.reverse.find {|rec| rec[:count]>0} : 'n/a'
+    summary[:last_temp] = (temps.length>0) ? last[:temp] : 'n/a'
     return summary
   end
 
@@ -91,6 +88,34 @@ class Graph
       end
     end    
     return sets
+  end
+  
+  
+  # get recent observations graph
+  # assumes we only have the last 10 obs for each station
+  def get_recent_obs_graph(title)
+    # all datasets for today
+    datasets = get_today_datasets
+    return "" if datasets.keys.length == 0
+    # temperature datasets for graphing
+    temps = {}
+    labels = Array.new(10){|i| 10-i}
+    # union of temps for bounds 
+    union = []    
+    # process datasets
+    datasets.keys.each do |key|   
+      #next if datasets[key].length != 10
+      temps[key] = []
+      datasets[key].each do |record|      
+        temps[key] << ((record[:count]>0) ? record[:temp].round(2) : '_')
+        union << record[:temp] if record[:count] > 0
+      end
+    end
+    return "" if temps.keys.length == 0
+    # bounds
+    min, max = union.min, union.max
+    # make the graph
+    return make_multi_series_graph(temps, labels, min, max, title)
   end
   
   # graph of all datasets for today
@@ -149,7 +174,6 @@ class Graph
   end  
   
   # contiguous graph over recent days
-  # assumes all days are there for all datasets
   # assume 4 days for now, that is what the bom provides
   def get_recent_days_contiguous_graph(title, num_days=4)
     # no data check
@@ -158,20 +182,26 @@ class Graph
     temps = {}
     # union of temps for bounds 
     union = []  
+    # set of days we care about
+    dayset = Array.new(num_days){|i| ((Date.today)-i)}.sort
     @dataset.keys.each do |station|
-      next if @dataset[station].keys.length != num_days
-      ordered_dates = @dataset[station].keys.sort
       temps[station] = []
-      ordered_dates.each do |date|
-        @dataset[station][date].each do |record|
-          if record[:count] > 0 
-            temps[station] << record[:temp].round(1)
-            union << record[:temp]
-          else
-            temps[station] << "_"
-          end
-        end        
-      end
+      # process station by dates we are interested in
+      dayset.each do |date|
+        # check for no data for date
+        if @dataset[station][date].nil?
+          48.times {|i| temps[station] << "_"}
+        else
+          @dataset[station][date].each do |record|
+            if record[:count] > 0 
+              temps[station] << record[:temp].round(1)
+              union << record[:temp]
+            else
+              temps[station] << "_"
+            end
+          end  
+        end
+      end      
     end
     # no prep'ed data check
     return "" if temps.keys.length == 0

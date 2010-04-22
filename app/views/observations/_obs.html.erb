@@ -1,0 +1,18 @@
+<%
+  # Parameters: sensors
+%>
+
+<table class="summary">
+  <tr align="left">
+    <th></th>
+    <th>Temperature</th>
+    <th>Date/Time</th>
+  </tr>
+<% sensors.each_with_index do |sensor, i| %>
+  <tr align="left" <% if i==(sensors.length-1) %>style="background-color:#eee;"<% end %>>
+    <td><%= (sensors.length)-i %></td>
+    <td><%= degrees_full(sensor.temp) %></td>
+    <td><%= sensor.created_at.strftime("%I:%M%p on %A, %d %B %Y") %></td>
+  </tr>
+<% end %>  
+</table>

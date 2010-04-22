@@ -3,8 +3,7 @@
 <table width="100%">
   <tr>
     <td valign="top">
-      <%= @office %> <br />
-      Site: <%= @local.name %> <br />
+      <%= @office %> > Sites > <%= @local.name %> 
       <br />
       <p>
       <%= link_to "Office Temperature", local_path %> | 
@@ -15,7 +14,10 @@
       <span class="current_temp"><%=degrees  @local.get_last_temp(@local.name) %></span>
       <br />
       <p>
-      <small>In the office</small>
+      At site <br />
+      <small>
+      (avg last 30 mins)
+      </small>
       </p>
     </td> 
   </tr>
@@ -26,6 +28,18 @@
 TODO: Some high level stats on this site... 
 </p>
 
+
+<div class="subsubtitle">Last 10 Observations</div>
+<div class="datasummary">  
+  <p>
+    <img src="<%= @recent_graph.get_recent_obs_graph("#{@local.name} Temperature: Last 10 Observations") -%>" />
+  </p>
+    <p>
+    <%= render :partial=>"obs", :locals => {:sensors=>@local.recent_resultset} %>
+  </p>
+</div>
+
+
 <div class="subsubtitle">Today</div>
 <div class="datasummary">  
   <p>
@@ -35,6 +49,8 @@ TODO: Some high level stats on this site...
     <%= render :partial=>"summary", :locals => {:dataset=>@graph.get_today_summary,:latest=>true} %>
   </p>
 </div>
+
+
 
 <div class="subsubtitle">Last 7 Days</div>
 <div class="datasummary">
