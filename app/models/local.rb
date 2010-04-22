@@ -29,7 +29,30 @@ class Local
     last_10_minutes
   end  
   
-  
+  # summary for a site name
+  def get_summary_for_site(name=@name)
+    summary = {}    
+    summary[:name] = name
+    # total
+    summary[:total] = Sensor.count(:all, :conditions=>['name=?',name])
+    # first obs date
+    rs = Sensor.find(:first, :conditions=>['name=?',name], :order=>"created_at")
+    summary[:first_datetime] = (!rs.nil?) ? rs.created_at : ""
+    # last obs date
+    rs = Sensor.find(:first, :conditions=>['name=?',name], :order=>"created_at DESC")
+    summary[:last_datetime] = (!rs.nil?) ? rs.created_at : ""
+    # max
+    rs = Sensor.maximum(:temp, :conditions=>['name=?',name])
+    summary[:max] = rs
+    # min
+    rs = Sensor.minimum(:temp, :conditions=>['name=?',name])
+    summary[:min] = rs
+    # avg
+    rs = Sensor.average(:temp, :conditions=>['name=?',name])
+    summary[:mean] = rs.to_f
+    
+    return summary
+  end
 
   
   # retrieve the lat average office temperature for today
@@ -59,8 +82,12 @@ class Local
     @recent_dataset[@name][Date.today] = []
     
     # lazy, just re-query
-    time = Time.now - 10.minutes
-    @recent_resultset = Sensor.find(:all, :conditions=>['created_at > ?', time.utc], :order=>"created_at DESC", :limit=>10);
+    # TODO just pull out of the result set, they are sorted already 
+    time = Date.today.to_time.utc
+    @recent_resultset = Sensor.find(:all, 
+      :conditions=>['created_at > ? and name=?', time.utc, @name], 
+      :order=>"created_at DESC", 
+      :limit=>10);
     @recent_resultset.reverse!
     @recent_resultset.each do |sensor|
       record = {}
@@ -175,10 +202,14 @@ class Local
   def load_all_local_sensors_by_date(start_date, end_date)
     s_date = start_date.to_time.utc
     e_date = end_date.to_time.utc  
-    names = Sensor.find(:all, :conditions=>["created_at between ? and ?", s_date, e_date], :group=>"name");
+    names = Sensor.find(:all, 
+      :conditions=>["created_at between ? and ?", s_date, e_date], 
+      :group=>"name");
     @resultset = {}
     names.each do |s|
-      @resultset[s.name] = Sensor.find(:all, :conditions=>["created_at between ? and ? AND name=?", s_date, e_date, s.name], :order=>"created_at");
+      @resultset[s.name] = Sensor.find(:all, 
+        :conditions=>["created_at between ? and ? AND name=?", s_date, e_date, s.name], 
+        :order=>"created_at");
     end
   end
   
@@ -188,7 +219,9 @@ class Local
     s_date = (Date.today-6).to_time.utc
     e_date = (Date.today+1).to_time.utc  
     @resultset = {}
-    @resultset[name] = Sensor.find(:all, :conditions=>["created_at between ? and ? AND name=?", s_date, e_date, name], :order=>"created_at");
+    @resultset[name] = Sensor.find(:all, 
+      :conditions=>["created_at between ? and ? AND name=?", s_date, e_date, name], 
+      :order=>"created_at");
   end
    
 end

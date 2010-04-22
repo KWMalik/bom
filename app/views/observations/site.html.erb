@@ -25,7 +25,9 @@
 
 <div class="subsubtitle">Overview</div>
 <p>
-TODO: Some high level stats on this site... 
+  <p>
+    <%= render :partial=>"site_summary", :locals => {:summary=>@local.get_summary_for_site} %>
+  </p> 
 </p>
 
 
@@ -36,7 +38,7 @@ TODO: Some high level stats on this site...
   </p>
     <p>
     <%= render :partial=>"obs", :locals => {:sensors=>@local.recent_resultset} %>
-  </p>
+  </p> 
 </div>
 
 

@@ -1,0 +1,22 @@
+<%
+  # Parameters: summary
+%>
+
+<table class="summary">
+  <tr align="left">
+    <th>#Obs</th>
+    <th>First Obs</th>
+    <th>Last Obs</th>    
+    <th>Min</th>
+    <th>Max</th>
+    <th>Avg</th>    
+  </tr>
+  <tr align="left">
+    <td><%= summary[:total] %></td>
+    <td><%= summary[:first_datetime].strftime("%I:%M%p %d/%m/%Y") %></td>
+    <td><%= summary[:last_datetime].strftime("%I:%M%p %d/%m/%Y") %></td>    
+    <td><%=degrees summary[:min] %></td>
+    <td><%=degrees summary[:max] %></td>
+    <td><%=degrees summary[:mean] %></td>    
+  </tr>
+</table>
