@@ -1,3 +1,6 @@
+require 'net/http'
+require 'uri'
+
 class ObservationsController < ApplicationController
 
   # official observations
@@ -69,16 +72,13 @@ class ObservationsController < ApplicationController
     @office = "Australian Bureau of Meteorology"
     @local = Local.new
     @local.load_last_7_days_dataset(name)
-    # load bom data
-    #@bom = Bom.new
-    #@bom.load_temperatures(@station.url, @station.name)
     # build graph data
     @graph = Graph.new
     #@graph.add_dataset(@bom.dataset)  
-    @graph.add_dataset(@local.dataset)
-    
+    @graph.add_dataset(@local.dataset)    
   end
-  
+
+
   
   private
   

@@ -11,9 +11,8 @@
     <th>Avg</th>
     <th>Min</th>
     <th>Max</th>
-    <th>
-    <% if latest %>Latest<% end %>
-    </th>
+    <!-- total hack -->
+    <th><span <% if !latest %>style="color:#fff;"<% end %>>Latest</span></th>
   </tr>
 <% dataset.keys.sort.each do |station| %>
   <tr align="left">

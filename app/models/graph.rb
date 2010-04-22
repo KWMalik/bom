@@ -118,6 +118,7 @@ class Graph
   
   # graph of all datasets for recent days (all days for all datasets)
   def get_recent_days_graph(title)
+    # no data check
     return "" if @dataset.keys.length == 0
     # temperature datasets for graphing
     temps = {}
@@ -139,6 +140,8 @@ class Graph
         end
       end
     end    
+    # no prep'ed data check
+    return "" if temps.keys.length == 0    
     # bounds
     min, max = union.min, union.max
     # make the graph
@@ -149,6 +152,7 @@ class Graph
   # assumes all days are there for all datasets
   # assume 4 days for now, that is what the bom provides
   def get_recent_days_contiguous_graph(title, num_days=4)
+    # no data check
     return "" if @dataset.keys.length == 0
     # temperature datasets for graphing
     temps = {}
@@ -169,6 +173,8 @@ class Graph
         end        
       end
     end
+    # no prep'ed data check
+    return "" if temps.keys.length == 0
     # bounds
     min, max = union.min, union.max    
     # make the graph
@@ -177,6 +183,8 @@ class Graph
   
   # boxplot of all days for a station
   def get_recent_days_boxplot_graph(station, title)
+    # no data check
+    return "" if @dataset.keys.length == 0  
     data = {}
     data[:min] = []
     data[:max] = []
@@ -203,6 +211,8 @@ class Graph
       data[:q3] << excel_upper_quartile(temps)
       data[:med] << excel_middle_quartile(temps)
     end
+    # no prep'ed data check
+    return "" if data[:min].length == 0    
     # bounds
     min, max = union.min, union.max
     # make the graph

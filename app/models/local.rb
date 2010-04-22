@@ -40,7 +40,8 @@ class Local
   # retrieve the last temperature for a station for today
   def get_last_temp(name)
     today = @dataset[name].keys.sort.last
-    raise "Do not have data for today #{today}" if today != Date.today
+    #raise "Do not have data for today #{today}" 
+    return "n/a" if today != Date.today
     @dataset[name][today].reverse.each do |record|
       return record[:temp] if record[:count] > 0
     end
