@@ -85,6 +85,23 @@ class ObservationsController < ApplicationController
   end
 
 
+  # post to get a google chart
+  # http://code.google.com/apis/chart/docs/post_requests.html
+  def chart
+    # hard part: a clean way of get data here to then post      
+    # can push it here as an encoded parameter - yuck!
+  
+    # do a post to get the image data
+    url = "http://..."
+    map = {}
+    res = Net::HTTP.post_form(URI.parse(url), map)
+    data = res.body
+    
+    # send image data 
+    # http://api.rubyonrails.org/classes/ActionController/Streaming.html
+    send_data(data, :type=>"image/png", :disposition => 'inline')    
+  end
+
   
   private
   

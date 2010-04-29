@@ -17,6 +17,7 @@ ActionController::Routing::Routes.draw do |map|
   map.local       "temp/office", :controller=>"observations", :action=>"local"
   map.localsites  "temp/office/sites", :controller=>"observations", :action=>"local_by_site"
   map.site        "temp/office/site", :controller=>"observations", :action=>"site"
+  map.chart        "chart", :controller=>"observations", :action=>"chart"
 
   
 

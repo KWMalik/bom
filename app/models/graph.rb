@@ -253,36 +253,46 @@ class Graph
   # expect data to be complete in [key][temps] format
   def make_multi_series_graph(datasets, xlabels, min_temp, max_temp, title)
     ordered_series = datasets.keys.sort
-    base = ""
-    # url
-    base << next_chart_url
+    
+    map = {}    
     # graph type
-    base << "cht=lc&"    
+    map["cht"] = "lc"    
     # graph size
-    base << "chs=600x240&"
+    map["chs"] = "600x240"
     # series colors
-    base << "chco=#{html_colors(datasets.keys.length).join(',')}&"
+    map["chco"] = html_colors(datasets.keys.length).join(',')
     # graph title
-    base << "chtt=#{title}&"
+    map["chtt"] = title
     # visible axes
-    base << "chxt=x,y&"
+    map["chxt"] = "x,y"
     # axis ranges    
-    base << "chxr=1,#{min_temp},#{max_temp},#{(max_temp-min_temp)/10.0}&"
+    map["chxr"] = "1,#{min_temp},#{max_temp},#{(max_temp-min_temp)/10.0}"
     # range for scaling data
-    base << "chds=#{min_temp},#{max_temp}&"
+    map["chds"] = "#{min_temp},#{max_temp}"
     # axis labels
-    base << "chxl=0:|#{xlabels.join('|')}&"
+    map["chxl"] = "0:|#{xlabels.join('|')}"
     # length of ticks
-    base << "chxtc=0,8&"
+    map["chxtc"] = "0,8"
     # data legend
-    base << "chdl=#{ordered_series.join('|')}&"
+    map["chdl"] = ordered_series.join('|')
+    
+    # TODO: consider using a more efficient data representation technique
+    # http://code.google.com/apis/chart/docs/data_formats.html
+    
     # data
     serieses = []
     ordered_series.each {|key| serieses << datasets[key].join(',') }
-    base << "chd=t:#{serieses.join('|')}"
+    map["chd"] = "t:#{serieses.join('|')}"
     
-    puts "DEBUG: graph length = #{base.length}"
-    return base
+    make_url(map)
+  end
+  
+  def make_url(map)
+    parts = []
+    map.keys.each {|key| parts << "#{key}=#{map[key]}" }
+    query_string = parts.join("&")
+    puts "DEBUG: query string length = #{query_string.length}"    
+    return next_chart_url() + query_string
   end
   
   
