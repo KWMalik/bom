@@ -1,9 +1,13 @@
-<div class="subtitle">Office Site: <%= @local.name %></div>
+<div class="subtitle">
+  <%= link_to "Office Observations", local_path  %> > 
+  <%= link_to "Sites", localsites_path  %> > 
+  <%= link_to @local.name, site_path(:name=>@local.name) %>
+</div>
 
 <table width="100%">
   <tr>
     <td valign="top">
-      <%= link_to @office, local_path  %> > <%= link_to "Sites", localsites_path  %> > <%= link_to @local.name, site_path(:name=>@local.name) %>
+      <%= @office  %>
       <br />
       <p>
       <%= link_to "Back", localsites_path  %>

@@ -1,10 +1,13 @@
-<div class="subtitle">Office Observations by Site</div>
+<div class="subtitle">
+  <%= link_to "Office Observations", local_path  %> > 
+  <%= link_to "Sites", localsites_path  %>
+</div>
 
 <table width="100%">
   <tr>
     <td valign="top">
-      <%= link_to @office, local_path  %> > <%= link_to "Sites", localsites_path  %>
-      <br />
+      <%= @office  %>
+      <br />    
       <p>
       <%= link_to "Back", local_path %>
       </p>

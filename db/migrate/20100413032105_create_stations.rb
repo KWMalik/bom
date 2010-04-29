@@ -1,7 +1,6 @@
 class CreateStations < ActiveRecord::Migration
   def self.up
     create_table :stations do |t|
-      t.string :id
       t.string :name
       t.float :lat
       t.float :long
