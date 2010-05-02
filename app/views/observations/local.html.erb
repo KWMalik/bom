@@ -8,14 +8,14 @@
       <p>
       <%= link_to "Observations By Site", localsites_path  %>
       </p>     
-      <p>
       <% if !@temp_difference.nil? %>
-      It is <strong><%= degrees @temp_difference %></strong>
-      <%= ((@temp_difference>0) ? "warmer" : "cooler") %> in the office than outside.
-      <br />
-      <% end %>
-      <small>(It is currently <%= degrees @bom_temp %> in  <%= @station.name %>).</small>
-      </p>      
+      <p>      
+        It is <strong><%= degrees @temp_difference %></strong>
+        <%= ((@temp_difference>0) ? "warmer" : "cooler") %> in the office than outside.
+        <br />      
+        <small>(It is currently <%= degrees @bom_temp %> in  <%= @station.name %>).</small>
+        </p>  
+      <% end %>    
     </td>   
      
     <td class="current_temp_td">
