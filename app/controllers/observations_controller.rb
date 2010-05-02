@@ -38,7 +38,8 @@ class ObservationsController < ApplicationController
     
     # temp difference
     @bom_temp = @bom.get_last_temp
-    @temp_difference = @local.get_last_temp_avg - @bom_temp
+    @temp_difference = nil
+    @temp_difference = @local.get_last_temp_avg - @bom_temp if !@bom_temp.nil?
   end
   
   # office observations (by site)
