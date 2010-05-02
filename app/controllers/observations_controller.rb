@@ -89,13 +89,16 @@ class ObservationsController < ApplicationController
   # post to get a google chart
   # http://code.google.com/apis/chart/docs/post_requests.html
   def chart
-    # hard part: a clean way of get data here to then post      
-    # can push it here as an encoded parameter - yuck!
+    # assume all the parameters were pushed here, build a custom list
+    post_params = {}
+    params.keys.each do |key|
+     next if key == 'action' or key == 'controller'
+     post_params[key] = params[key]
+    end
   
     # do a post to get the image data
-    url = "http://..."
-    map = {}
-    res = Net::HTTP.post_form(URI.parse(url), map)
+    url = "http://chart.apis.google.com/chart"
+    res = Net::HTTP.post_form(URI.parse(url), post_params)
     data = res.body
     
     # send image data 

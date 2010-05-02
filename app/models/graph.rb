@@ -292,7 +292,9 @@ class Graph
     map.keys.each {|key| parts << "#{key}=#{map[key]}" }
     query_string = parts.join("&")
     puts "DEBUG: query string length = #{query_string.length}"    
-    return next_chart_url() + query_string
+    
+    return "/chart?#{query_string}"    
+    #return next_chart_url() + query_string
   end
   
   
@@ -312,7 +314,9 @@ class Graph
     # build url   
     base = ""
     # url
-    base << next_chart_url    
+    #base << next_chart_url    
+    base << "/chart?"    
+    
     # graph size
     base << "chs=600x240&"
     # graph title
@@ -345,18 +349,6 @@ class Graph
 
     puts "DEBUG: graph length = #{base.length}"
     return base
-  end
-  
-  
-  # for drawing multiple charts from this graph object
-  # avoid all using http://chart.apis.google.com/chart?
-  def next_chart_url
-    # does not work for now!?!?!
-    return "http://chart.apis.google.com/chart?"
-    #url = "http://#{@counter}.chart.apis.google.com/chart?"
-    #@counter += 1
-    #@counter = 0 if @counter > 9
-    #return url
   end
 
   # labels for 24 hours
