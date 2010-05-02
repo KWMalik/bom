@@ -231,7 +231,8 @@ class Graph
       @dataset[station][date].each {|r| temps << r[:temp] if r[:count]>0 }
       # skip empty days, breaks the graph
       next if temps.empty?
-      labels << date.strftime("%d/%m/%Y")
+      #labels << date.strftime("%d/%m/%Y")
+      labels << date.strftime("%A")
       # add to union
       union += temps
       # stats
@@ -291,10 +292,7 @@ class Graph
     parts = []
     map.keys.each {|key| parts << "#{key}=#{map[key]}" }
     query_string = parts.join("&")
-    puts "DEBUG: query string length = #{query_string.length}"    
-    
     return "/chart?#{query_string}"    
-    #return next_chart_url() + query_string
   end
   
   
@@ -371,13 +369,13 @@ class Graph
   
   # labels for multiple day graph (midnight to midnight)
   def multi_day_labels(num_days)
-    labels = []
-    num_days.times do |i|
-      labels << "12:00am"
-      labels << "12:00pm"
-    end
-    labels << "12:00am"
-    return labels
+     labels = []
+     num_days.times do |i|
+      labels << (Date.today-i).to_time.strftime("%A")
+     end          
+     labels.reverse!
+     labels << (Date.today+1).to_time.strftime("%A")
+     return labels
   end  
   
   # get a list of html colors for graph serieses
