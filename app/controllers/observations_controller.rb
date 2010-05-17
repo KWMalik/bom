@@ -62,6 +62,7 @@ class ObservationsController < ApplicationController
     @graph.add_dataset(@local.dataset)
     
     # all sites for this office
+    @tmp_local = Local.new
     @sites = Sensor.find(:all, :group=>"name", :order=>"name")
   end  
   
